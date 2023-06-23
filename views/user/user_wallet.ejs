@@ -1,0 +1,75 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<!-- Product -->
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <div class="flex-w flex-sb-m p-b-52">
+
+            
+            <!-- Search product -->
+            <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                <div class="bor8 dis-flex p-l-15">
+                    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                        <i class="zmdi zmdi-search"></i>
+                    </button>
+
+                    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+                </div>	
+            </div>
+
+
+        </div>
+
+        <!-- ============ Main ============ -->
+
+        <div class="row" style="padding-top: 5%;">
+            <div class="container">
+              <div>
+                <h2> wallet Balance: &nbsp;&nbsp;&nbsp;₹&nbsp;<%= walletbalance?.balance %></h2>
+              </div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Sl No</th>
+                    <th scope="col">Order Id</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Refunded Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                 
+                  <% if (orderdetails && Array.isArray(orderdetails)) { %>
+                
+                  <% orderdetails.forEach((item,index ) => { %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= item._id %></td>
+                   
+                    <td><%= item.createdAt.toLocaleDateString() %></td>
+                    <td><%= item.items[0].product.name %></td>
+                    <td><%= item.items[0].quantity %></td>
+                    <td><%= item.payment_method %></td>
+                    <td><span></span><%= item.total %></td>
+          
+                  
+                  
+                  </tr>
+                  <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        <!-- ============ Main ============ -->
+
+
+    </div>
+</div>    
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

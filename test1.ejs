@@ -1,0 +1,405 @@
+<script>
+
+  const addToWishlist = async (req, res) => {
+    try {
+        const user = req.session.user;
+        const userId = req.session.user?._id;
+
+        const productId = req.params.id;
+
+        let userWishlist = await Wishlist.findOne({user:userId });
+
+        if(!userWishlist){
+            const newList = await new Wishlist({user: userId, items: []});       
+            await newList.save();
+
+            userWishlist = newList;
+        }
+        const productIndex = userWishlist?.items.findIndex((item) => {
+
+            return new ObjectId(item.productId).equals(productId);
+        });
+
+        if(productIndex == -1){
+            userWishlist.items.push({productId});
+            await userWishlist.save();
+
+            
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        // Ajax request, send JSON response
+         res.json({ success: true, message: 'Item added to Wishlist' });
+      } else {
+        // Non-Ajax request, redirect to the same page
+         res.redirect('back');
+      }
+    } else {
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        // Ajax request, send JSON response
+        res.json({ success: false, message: 'Item already in Wishlist' });
+      } else {
+        // Non-Ajax request, redirect to the same page
+         res.redirect('back');
+      }
+    } 
+
+    } catch (error) {
+        console.log(error);             
+    }
+};
+
+
+const removeItemWishlist = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const userId = req.session.user?._id;
+
+        const userProduct = await Product.findById(productId);
+
+        if(!userProduct){
+            res.send('Product Not Found');
+        }
+
+        const userWishlist = await Wishlist.findOne({user: userId});
+
+        if(userWishlist){
+            const itemIndex = userWishlist.items.findIndex((item) => item.productId.equals(productId));
+
+            if(itemIndex > -1){
+                userWishlist.items.splice(itemIndex, 1)
+                await userWishlist.save();
+
+                res.redirect('/user/wishlist');
+            } else {
+                res.json('Product Not Found');
+            }
+        }else{
+            res.json('Product Not Found');
+
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
+
+
+
+
+exports.addToWishlist = async (req,res)=>{
+  try {
+    
+    const productId = req.params.id
+    const userId = req.session.user
+
+    let userWishlist = await Wishlist.findOne({userId:userId})
+
+  if (!userWishlist) {
+      // If the user's cart doesn't exist
+      //creat new one
+      let newWishlist = new Wishlist({ userId: userId, products: [] });
+      await newWishlist.save();
+      userWishlist = newWishlist;
+  }
+
+  const productIndex = userWishlist.products.findIndex(
+      (product) => product.productId == productId
+
+  );
+  
+
+  if (productIndex === -1) {
+    // If the product is not in the wishlist, add it
+    userWishlist.products.push({ productId: productId, quantity: 1 });
+  } else {
+    // If the product is already in the wishlist, increase its quantity by 1
+    userWishlist.products[productIndex].quantity += 1;
+  }
+  
+    
+
+  const result = await userWishlist.save();
+
+
+  res.status(200).json({ message: 'Product added to wishlist successfully' });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
+
+const isUserBlocked=async(req,res,next)=>{
+    const userId=req.session.user?._id
+    const user= await userSchema.findById(userId)
+  
+    if(user.isBlocked){
+        req.session.save(() => {
+            req.session.user=false
+            res.redirect('/login'); 
+         })
+         return
+
+    }else{
+      next()
+    }
+}
+
+
+try {
+        if (req.session.user) {
+            const userId = req.session.user;
+            const user = await userSchema.findOne({ _id: userId }); // Assuming you're querying by '_id'
+            
+            if (user && user.isBlocked) { // Added null check for 'user' object
+                req.session.save(() => {
+                    res.redirect('/login');
+                });
+                return;
+            }
+        }
+        next();
+    } catch (error) {
+        console.error('Error in isBlocked middleware', error);
+        next(error);
+    }
+
+
+const userId=req.session.user?._id
+    console.log(userId);
+    const user= await userSchema.findOne({_id: userId})
+    console.log(user);
+  
+    if(user.isBlocked){
+        req.session.save(() => {
+            req.session.user=false
+            res.redirect('/login'); 
+         })
+         return
+
+    }else{
+      next()
+    }
+
+
+
+
+    exports.deleteAddress = async (req,res) =>{
+      try {
+        // Find the user document by ID
+        const userId = req.session.user?._id
+        const addressId = req.params.id
+
+        const user = await userData.findById(userId);
+    
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+    
+        // Find the index of the address with the specified _id in the array
+        const addressIndex = user.address.findIndex(address => address._id.toString() === addressId);
+    
+        if (addressIndex === -1) {
+          return res.status(404).json({ error: 'Address not found' });
+        }
+    
+        // Remove the address from the array
+        user.address.splice(addressIndex, 1);
+    
+        // Save the updated user document
+        await user.save();
+    
+        res.redirect('/user-profile'); // Redirect to a suitable page after successful deletion
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+      }
+    }
+
+</script>
+
+
+
+
+
+
+<section class="page-header">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="content">
+                  <h1 class="page-name">Add Address</h1>
+                  <ol class="breadcrumb">
+                      <li><a href="/cart">cart</a></li>
+                      <li class="active">checkout</li>
+                  </ol>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+<div class="page-wrapper">
+  <div class="checkout shopping">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="block billing-details">
+            <h4 class="widget-title">Add Address</h4>
+            <form class="checkout-form" action="/address" method="post" name="basic" onsubmit="return validateBasic()">
+              <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input
+                name="name"
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder=""
+                />
+              </div>
+              <div class="form-group">
+                <label for="user_address">Address</label>
+                <input
+                name="Address"
+                  type="text"
+                  class="form-control"
+                  id="Address"
+                  placeholder=""
+                />
+              </div>
+              <div class="checkout-country-code clearfix">
+                <div class="form-group">
+                  <label for="user_post_code">Phone number</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="user_post_code"
+                    name="phone"
+                    value=""
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="user_city">Pin code</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="user_city"
+                    name="pincode"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+               <label for="user_country">City</label>
+               <input
+               name="city"
+                 type="text"
+                 class="form-control"
+                 id="user_country"
+                 placeholder=""
+               />
+             </div>
+              <div class="form-group">
+                <label for="user_country">State</label>
+                <input
+                name="state"
+                  type="text"
+                  class="form-control"
+                  id="user_country"
+                  placeholder=""
+                />
+              </div>
+
+              <div style="width: 30px!important;">
+                <button type="submit" class="btn btn-main">ADD</button>
+              </div>
+            </form>
+          </div>
+         </div>
+          <div class="col-md-4">
+            <div class="product-checkout-details">
+               <div class="block">
+                  <h4 class="widget-title">Recent Address</h4>
+                 
+                    <% addressofdelivery.forEach(function(address,index) { %>
+                      
+                      <div class="col-md-12 form-group">
+                        <label for="">
+                           
+                        <input type="radio" name="selectedaddress" value="<%= index+1 %>"</>
+                      <h5 style="text-decoration: underline; font-size:18px; font-weight: bold;"> Address: <%= index+1 %></h5>
+
+                      <p><%= address.name %>,
+                      <p><%= address.Address %>,
+
+                     
+                    
+                      <%= address.phone %>,
+                      <%= address.pincode %>,
+                      <%= address.city %>,
+                      <%= address.state %>
+                      <a href="/checkout/<%= address._id %>" class="primary-btn "  >Deliver here</a>    
+                    </label>   
+                    </div>
+                    <% }); %>
+             
+                
+                 
+                
+                
+               </div>
+            </div>
+         </div>
+        </div>
+     
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  exports.addToWishlist = async (req,res)=>{
+  try {
+    
+    const productId = req.params.id
+    const userId = req.session.user
+
+    let userWishlist = await Wishlist.findOne({userId:userId})
+
+  if (!userWishlist) {
+      // If the user's cart doesn't exist
+      //creat new one
+      let newWishlist = new Wishlist({ userId: userId, products: [] });
+      await newWishlist.save();
+      userWishlist = newWishlist;
+  }
+
+  const productIndex = userWishlist.products.findIndex(
+      (product) => product.productId == productId
+
+  );
+  
+
+  if (productIndex === -1) {
+    // If the product is not in the wishlist, add it
+    userWishlist.products.push({ productId: productId, quantity: 1 });
+  } else {
+    // If the product is already in the wishlist, increase its quantity by 1
+    userWishlist.products[productIndex].quantity += 1;
+  }
+  
+    
+
+  const result = await userWishlist.save();
+
+
+  res.status(200).json({ message: 'Product added to wishlist successfully' });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+</script>

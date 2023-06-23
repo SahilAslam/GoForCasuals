@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Signup 07</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="user_login_assets/css/style.css">
+
+</head>
+
+<body>
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<!-- <div class="col-md-6 text-center mb-5"> -->
+					<h2 class="heading-section" style="margin-bottom: 25px; border-bottom: 2px solid #222">BECOME A MEMBER SIGNUP NOW</h2>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<!-- <div class="col-md-12 col-lg-10"> -->
+					<!-- <div class="wrap d-md-flex"> -->
+						<!-- <div class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+							<div class="text w-100">
+								<h2>Welcome to Signup</h2>
+								<p>Already have an account?</p>
+								<a href="/login" class="btn btn-white btn-outline-white">Login</a>
+							</div>
+						</div> -->
+						<div class="login-wrap p-4 p-lg-5">
+							<!-- <div class="d-flex">
+								<div class="w-100">
+									<h3 class="mb-4">Sign Up</h3>
+								</div>
+								<div class="w-100">
+									<p class="social-media d-flex justify-content-end">
+										<a href="#"
+											class="social-icon d-flex align-items-center justify-content-center"><span
+												class="fa fa-facebook"></span></a>
+										<a href="#"
+											class="social-icon d-flex align-items-center justify-content-center"><span
+												class="fa fa-twitter"></span></a>
+									</p>
+								</div>
+							</div> -->
+							<form action="/signup" method="post" name="signup" class="signup-form" onsubmit=" return validateSignup()">
+								<div class="form-group mb-3">
+									<label class="label" for="name">Full Name</label>
+									<input type="text" name="name" class="form-control" placeholder="Full Name"
+										required>
+								</div>
+								<div class="form-group mb-3">
+									<label class="label" for="name">Username</label>
+									<input type="text" name="username" class="form-control" placeholder="Username"
+										required>
+								</div>
+								<div class="form-group mb-3">
+									<label class="label" for="email">Email</label>
+									<input type="email" name="email" class="form-control" placeholder="Email" required>
+								</div>
+								<div class="form-group mb-3">
+									<label class="label" for="">Mobile</label>
+									<input type="tel" name="phone" class="form-control" placeholder="Mobile" required>
+								</div>
+								<div class="form-group mb-3">
+									<label class="label" for="password">Password</label>
+									<input type="password" name="password" class="form-control" placeholder="Password"
+										required>
+								</div>
+								<div class="form-group mb-3">
+									<label class="label" for="confirm-password">Confirm Password</label>
+									<input type="password" name="confirmpassword" class="form-control" placeholder="Confirm Password" required>
+								</div>
+								<% if(locals.msg){%>
+									<div id="msg" class="alert alert-danger text-center">
+									   <%= msg %>
+									</div>
+								<% } %>
+								<div class="form-group">
+									<button type="submit" class="form-control btn submit px-3" style="background-color: #717fe0; color: white;">Sign
+										Up</button>
+								</div>
+								<a href="/login" class=" text-dark" style="border-bottom: 2px solid #000">Already have an account? LOGIN NOW</a>								
+							</form>
+						</div>
+					</div>
+				<!-- </div> -->
+			</div>
+		</div>
+	</section>
+
+	<script src="user_login_assets/js/jquery.min.js"></script>
+	<script src="user_login_assets/js/popper.js"></script>
+	<script src="user_login_assets/js/bootstrap.min.js"></script>
+	<script src="user_login_assets/js/main.js"></script>
+
+	<script>
+		function validateSignup() {
+			var name = document.forms["signup"]["name"].value.trim();
+			var username = document.forms["signup"]["username"].value.trim();
+			var email = document.forms["signup"]["email"].value.trim();
+			var phone = document.forms["signup"]["phone"].value.trim();
+			var password = document.forms["signup"]["password"].value;
+			var confirmpassword = document.forms["signup"]["confirmpassword"].value;
+
+			if (name == "") {
+				alert("Name must be filled out");
+				return false;
+			}
+            // Validation for email field
+			if (email == "") {
+				alert("Email must be filled out");
+				return false;
+			} else {
+				// regex for email validation
+				var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+				if (!email_regex.test(email)) {
+					alert("Invalid email address");
+					return false;
+				}
+			}
+			//validation for username
+			if (username == "") {
+				alert("Username must be filled out");
+				return false;
+			}
+			// Validation for password field
+			if (password.length < 8 || !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+				alert("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.")
+  				return false;
+			}
+			if (phone == "") {
+				alert("Phonenumber must be filled out");
+				return false;
+			}
+
+			if(confirmpassword !== password) {
+				alert("Confirm your password correctly")
+				return false;
+			}
+
+			return true; // form is valid
+		}
+	</script>
+
+	<script>
+		setTimeout(()=>{
+			document.getElementById("msg").style.display='none'
+		},2000)
+	</script>
+
+</body>
+
+</html>

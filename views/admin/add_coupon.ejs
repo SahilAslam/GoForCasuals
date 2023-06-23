@@ -1,0 +1,43 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<div class="col-sm-12 col-xl-6 container-fluid mt-5">
+    <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Add Coupon</h6>
+        <form action="" method="post">
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Coupon Code</label>
+                <input name="code" class="form-control form-control-lg mb-3" type="text" placeholder=""
+                aria-label=".form-control-lg example">
+            </div>
+            <div class="form-floating mb-3">
+                <input type="date" name="startingDate" class="form-control" id="floatingPassword" placeholder="">
+                <label for="floatingPassword">Date</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="date" name="expiryDate" class="form-control" id="floatingPassword" placeholder="">
+                <label for="floatingPassword">Expiry Date</label>
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Discount</label>
+                <input name="discount" class="form-control form-control-lg mb-3" type="text" placeholder=""
+                aria-label=".form-control-lg example">
+            </div>
+            
+            <% if(locals.message){%>
+                <div id="msg" class="alert alert-danger text-center">
+                   <%= message %>
+                </div>
+            <% } %>
+            <button class="btn btn-lg btn-outline-success w-100 mt-2" type="submit">Add Coupon</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    setTimeout(() => {
+        document.getElementById("msg").style.display = 'none'
+    },3000)
+</script>
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

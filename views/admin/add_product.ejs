@@ -1,0 +1,47 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+    <div class="col-sm-12 col-xl-6 container-fluid mt-5">
+        <form action="/addProduct" method="post" enctype="multipart/form-data">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Add Product</h6>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control"  name="name"  id="floatingInput"
+                        placeholder="text" required>
+                    <label for="floatingInput">Product Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" name="price" class="form-control" id="floatingPassword" placeholder="number" required>
+                    <label for="floatingPassword">Price</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" name="stock" class="form-control" id="floatingPassword" placeholder="number" required>
+                    <label for="floatingPassword">Stock</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select" name="category" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <% data.forEach(product => { %>
+                            <option value="<%=product.category %>">
+                              <%= product.category %>
+                            </option>
+                        <%});%>
+                    </select>
+                    <label for="floatingSelect">Category</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" name="description" class="form-control" id="floatingPassword" placeholder="description" required>
+                    <label for="floatingPassword">Description</label>
+                </div>
+                <div class="mt-2">
+                    <label for="formFileLg" class="form-label">Select Image</label>
+                    <input class="form-control form-control-lg bg-dark"  id="formFileLg" type="file" multiple name="photo" required>
+                </div>
+                <button type="submit" class="btn btn-success mt-4">Add Product</button>
+            </div>
+        </form>
+    </div>
+
+<%- include('partials/_footerbar') %>    
+<%- include('partials/_footer') %>
+

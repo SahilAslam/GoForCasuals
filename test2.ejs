@@ -1,0 +1,70 @@
+<form class="checkout-form" action="/checkout/<%=address._id %>" method="post" id="checkout-form">
+    <div class="col-md-12">
+        <h4 class="widget-title" style="color: #717fe0;">Billing Details</h4>
+        <div class="block billing-details mt-3">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <div class="col-md-12">
+                        <div class="d-flex mb-3">
+                            <input type="radio" value="<%= address.id%>" name="address" class=" mr-3">
+                            <div class="border p-2" style="color: rgb(80, 80, 80);">
+                                <b>
+                                    <%= address.name%>
+                                </b>,<br>
+                                <%= address.address%>, <br>
+                                <%= address.city%>, <%= address.state%>, <br>
+                                Zipcode: <%= address.pincode%>, Mobile: <%= address.phone%>
+                            </div>
+                            <!-- <div class="ml-auto pr-3 d-flex"> -->
+                                <div class="p-l-100">
+                                  <a class="btn btn-primary pl-3 pr-3 text-light"
+                                    style="letter-spacing: 0.1rem;cursor: pointer;" data-toggle="modal"
+                                    data-target="#edit<%= address.id%>">Edit</a>
+                                </div>
+                                <div class="ml-3 mt-1" style="cursor: pointer;">
+                                  <a data-toggle="modal" data-target="#deleteAddr<%= address.id%>">
+                                    <div class="border border-warning text-center" style="width: fit-content;">
+                                      <span class="ion-ios-close p-3"></span>
+                                  </a>
+                                </div>
+                            </div>
+                        </div>                                            
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="block">
+            <h2 class="widget-title" style="color: #717fe0;">Payment Methods</h2>
+            <div class="payment-methods mt-4">
+                <div class="payment-method">
+                    <input class="payment-method-input" type="radio" name="payment"
+                        id="card-payment" value="paypal" >
+                    <label class="payment-method-label" for="card-payment">
+                        <span class="payment-method-icon"><i
+                                class="fa fa-credit-card"></i></span>
+                        Paypal
+                    </label>
+                </div>
+                <div class="payment-method">
+                    <input class="payment-method-input" type="radio" name="payment"
+                        id="razorpay-payment" value="razorpay">
+                    <label class="payment-method-label" for="razorpay-payment">
+                        <span class="payment-method-icon"><i class="fa fa-money"></i></span>
+                        Razorpay
+                    </label>
+                </div>
+                <div class="payment-method">
+                    <input class="payment-method-input" type="radio" name="payment"
+                        id="cod-payment" value="cod">
+                    <label class="payment-method-label" for="cod-payment">
+                        <span class="payment-method-icon"><i class="fa fa-money"></i></span>
+                        Cash on Delivery
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn mt-20" style="background-color: #717fe0; color: white; border: 2px solid #222;">
+                Place Order
+            </button>                                           
+        </div> 
+    </div>
+</form>

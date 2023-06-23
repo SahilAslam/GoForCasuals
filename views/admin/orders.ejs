@@ -1,0 +1,146 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+            
+    <style>
+        .table-striped {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2)) !important;
+            background-size: 20px 20px !important;
+            background-position: 0 0, 10px 10px !important;
+        }
+
+        .date-filter-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .date-filter-form label {
+            margin-right: 10px;
+        }
+
+        .date-filter-form input[type="submit"] {
+            margin-left: 10px;
+        }
+        .custom-button {
+            background-color: coral;
+            color: azure;
+
+        }
+    </style>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Recent Salse</h6>
+            <a href="">Show All</a>
+        </div>
+        <div class="table-responsive">
+            <table id="myTable" style="width: 100%" id="productTable" class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Date</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Details</th>
+                    </tr>
+                </thead>
+                <tbody>  
+                    <% orders.reverse().forEach((orders,index) => { %>
+                    <tr>
+                        <td><%= orders.createdAt.toLocaleDateString() %></td>
+                        <td>
+                            <% orders.items.forEach((item, index) => { %>
+                                <%= orders.length-index %>. <%= item.product.name %> <br>
+                            <% }) %>
+                        </td>
+                        <td><%= orders.user.name %></td>
+                        <td><%= orders.total %></td>
+                        <td>
+                            <% orders.items.forEach((item, index) => { %>
+                                <img src="<%= item.product.photo[0] %>" alt="" width="40px" class="img-thumbnail"> <br>
+                            <% }) %>    
+                        </td>
+                        <td><%= orders.payment_method %></td>           
+                            <td><%= orders.status %></td>
+                            <td>
+                                <a data-bs-toggle="modal" data-bs-target="#exampleModal<%= orders._id  %>"><i class="fas fa-pencil-alt align-center" ></i></a>
+                                <% if (orders.status == "Returned") { %>
+                                    <a class="btn btn-danger" href="/refund/<%= orders._id  %>">Allow Refund</a>
+                                <% } %>
+                            </td>
+                        <td><a class="btn btn-sm btn-primary" href="/admin-orderDetails/<%= orders._id  %>">Detail</a></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <% orders.forEach((orders) =>{ %>
+
+                <!-- Modal -->
+              
+                <div class="modal fade" id="exampleModal<%= orders._id  %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Status updated</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/update_order/<%= orders._id %>" method="post">
+                                <select name="status">
+                                    
+                                    <option value="Pending" <% if (orders.status === 'Pending') { %>selected<% } %>>Pending</option>
+                                    <option value="Delivered" <% if (orders.status === 'Delivered') { %>selected<% } %>>Delivered</option>
+                                    <option value="Shipped" <% if (orders.status === 'Shipped') { %>selected<% } %>>Shipped</option>
+                                    <option value="Cancelled" <% if (orders.status === 'Cancelled') { %>selected<% } %>>Cancel</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<style>
+    .align-center {
+    display: flex;
+    justify-content: center;
+}
+</style>
+
+<script>
+    setTimeout(() => {
+      document.getElementById("msg").style.display = "none";
+    }, 1000);
+    
+  
+    $(document).ready(function() {
+      $('#myTable').DataTable();
+    })
+    let table= new DataTable('#myTable')
+   
+  </script>
+
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

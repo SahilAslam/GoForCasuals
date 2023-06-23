@@ -1,0 +1,152 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<!-- Product -->
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <div class="flex-w flex-sb-m p-b-52">
+
+            
+            <!-- Search product -->
+            <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                <div class="bor8 dis-flex p-l-15">
+                    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                        <i class="zmdi zmdi-search"></i>
+                    </button>
+
+                    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+                </div>	
+            </div>
+
+
+        </div>
+
+        <!-- ============ Main ============ -->
+
+        <style>
+            .gradient-custom {
+            
+                background: #ffffff;
+               
+                background: -webkit-linear-gradient(to top left, rgb(255, 255, 255), rgb(255, 255, 255));
+                /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: linear-gradient(to top left, rgb(255, 255, 255), rgb(255, 255, 255))
+            }
+        </style>
+        <div class="container">
+            <section class=" gradient-custom">
+                <div class="container py-5 h-100">
+                    <div class="row d-flex justify-content-center align-items-center h-100">
+                        <div class="col-lg-10 col-xl-8">
+                            <div class="card" style="border-radius: 10px;">
+                                <div class="card-header px-4 py-5" style="height: 100px; background-color: #222; display: flex; align-items: center; justify-content: space-between;">
+                                    <h5 style="text-align: center; color: #ffffff; flex-grow: 1;">
+                                      Order Details <span style="font-weight: bolder; font-size: 15px;"><%= user.name %></span>!
+                                    </h5>
+                                    <div style="text-align: right;">
+                                        
+                                        <a href="/orderInvoice/<%= order._id %>" style="color: beige; font-weight: bolder;"><button class="btn" style="background-color: #717fe0; color: #ffffff;">Invoice</button></a>
+                                        
+                                    </div>
+                                  </div>
+                                  
+                                  
+                                  
+                                
+                             
+                                <div class="card-body p-4">
+                             
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <p class="lead fw-normal mb-0" style="color: #000000;">Receipt</p>
+                                    
+        
+                                    </div>
+                                    <p class="bold ms-sm-3"  >Order Id: <%= order._id %></p>
+                                
+                                    <% if (order && order.items) { %>
+                                        <% order.items.forEach((item, index) => { %>
+                                            <div class="card shadow-sm border-radius mb-4 ms-sm-3 me-3">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        
+                                                        <div class="col-md-2 d-flex justify-content-center align-items-center" >
+                                                            <img style="height: 100px;" src="/<%= item.product.photo[0] %>" class="img-fluid" alt="Phone">
+                                                        </div>
+                                                        <div class="col-md-2 text-center d-flex justify-content-center align-items-center" style="margin-top: 28px; font-weight: bolder;" >
+                                                            <p class="text-muted mb-0 small">Product Name: <%= item.product.name %></p>
+                                                        </div>
+                                                        <div class="col-md-2 text-center d-flex justify-content-center align-items-center" style="margin-top: 28px; font-weight: bolder;" >
+                                                            <p class="text-muted mb-0 small">Category<br><%= item.product.catagory %></p>
+                                                        </div>
+                                                        <div class="col-md-2 text-center d-flex justify-content-center align-items-center" style="margin-top: 28px; font-weight: bolder;" >
+                                                            <p class="text-muted mb-0 small">Qantity: <%= item.quantity %></p>
+                                                        </div>
+                                                        <div class="col-md-2 text-center d-flex justify-content-center align-items-center" style="margin-top: 28px; font-weight: bolder;" >
+                                                            <p class="text-muted mb-0 small">Price: $<%= item.price %></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>	
+                                        <% }) %>
+                                    <% } %>   
+                                            
+                                </div>
+                                
+                            <div class="m-sm-3">
+                                <div >
+                                    <h4>Order Status: <span style="font-weight: bolder;">  <%= order.status %> </span>  </h4>
+                                </div>
+                                <div class="container">
+                                    <div class="d-flex justify-content-between pt-2  " style="display: flex;" >
+                                        <div style="width: 50%;">
+                                        <p class="fw-bold mb-0" style="margin-top: 50px;margin-left: -18px; font-size: larger;font-weight: bolder; color: black; ">Order Details</p>    
+                                        </div>
+                                    <div style="width: 50%; margin-top: 50px; margin-left: 320px;">
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4" style="font-weight: bold; color: rgba(31, 30, 30, 0.582);">Total :</span> ₹<%= order.total %></p>
+                                    </div>
+                                    </div>
+                                
+                                
+                                </div>
+                                
+                                <div class="d-flex justify-content-between pt-2">
+                                                    
+                                    <p class="text-muted mb-0">Delivery Address Details :</p>
+                                    
+                                        
+                                        <p> Name: <%= order.address.name %> </p><br>
+                                        <p>City: <%= order.address.city %> </p><br>
+                                        <p>  State: <%= order.address.state %> </p><br>
+                                        <p> Pincode: <%= order.address.pincode %> </p>
+                                            
+                                
+                                        
+                                    
+                                </div>
+                            </div>
+                            <div class="card-footer border-0 px-4 py-5"
+                            style="background-color: #717fe0; border-bottom-left-radius: 10px; height: 60px; display: flex; justify-content: flex-end; align-items: center;">
+                          
+                           <h3 class="text-white text-uppercase mb-0" style="color: beige;">
+                               Total Amount:&nbsp;&nbsp;&nbsp;<span class="h2 mb-0 ms-2">₹<%= order.total %></span>
+                           </h3>
+                       </div>
+                     
+                        </div>
+                      
+                    </div>
+                 
+                </div>
+            
+        </div>
+        </section>
+        </div>
+
+
+
+        <!-- main -->
+    </div>
+</div>
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

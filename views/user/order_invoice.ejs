@@ -1,0 +1,210 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<!-- Product -->
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <div class="flex-w flex-sb-m p-b-52">
+
+            
+            <!-- Search product -->
+            <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                <div class="bor8 dis-flex p-l-15">
+                    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                        <i class="zmdi zmdi-search"></i>
+                    </button>
+
+                    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+                </div>	
+            </div>
+
+
+        </div>
+
+        <!-- ============ Main ============ -->
+
+
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <!------ Include the above in your HEAD tag ---------->
+
+        <div class="container" id="invoice">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="invoice-title">
+                        <h2>Invoice</h2><h3 class="pull-right">Order <%= order._id %></h3>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <address>
+                            <strong>Billed To:</strong><br>
+                                <%= order.address.name %><br>
+                                <%= order.address.city %> <br>
+                                <%= order.address.state %><br>
+                                <%= order.address.pincode %><br>
+                            </address>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <address>
+                            <strong>Shipped To:</strong><br>
+                            <%= order.address.name %><br>
+                            <%= order.address.city %> <br>
+                            <%= order.address.state %><br>
+                            <%= order.address.pincode %><br>
+                            
+                            </address>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <address>
+                                <strong>Payment Method:</strong><br>
+                                <%= order.payment_method  %><br>
+                            </address>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <address>
+                                <strong>Order Date:</strong><br>
+                            <%= order.createdAt.toLocaleDateString() %><br><br>
+                            </address>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><strong>Order summary</strong></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <td><strong>Item</strong></td>
+                                            <td class="text-center"><strong>Price</strong></td>
+                                            <td class="text-center"><strong>Quantity</strong></td>
+                                            <td class="text-right"><strong>Totals</strong></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% order.items.forEach(item => { %>
+                                
+                                        <tr>
+                                            
+                                            <td ><%= item.product.name %></td>
+                                            <td class="text-center"><%= item.price %></td>
+                                            <td class="text-center"> <%= item.quantity %></td>
+                                            <td class="text-right">₹<%= item.price %></td>
+                                        </tr>
+                                    
+                                        <% }) %>
+                                    
+                                        <tr>
+                                            <td class="thick-line"></td>
+                                            <td class="thick-line"></td>
+                                            <td class="thick-line text-center"><strong>Subtotal</strong></td>
+                                            <td class="thick-line text-right">₹<%= order.total %></td>
+                                        </tr>
+                                    
+                
+                                        
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+
+        </div>
+
+        <div style="margin-left: 45%;" class="mb-4">
+            <button type="button" class="btn btn-primary" id="downloadPdf">Download Invoice</button>
+        </div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+        <!-- PDF AND EXCEL -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+        <script>
+            const button = document.getElementById('downloadPdf');
+
+            function generatePDF() {
+                // Choose the element that your content will be rendered to.
+                const element = document.getElementById('invoice');
+                // Choose the element and save the PDF for your user.
+                html2pdf().set({
+                    pagebreak: { mode: 'avoid-all' }, // Set pagebreak option to avoid splitting content
+                    page: 'a4' // Set the page size to A4
+                }).from(element).save();
+            }
+
+            button.addEventListener('click', generatePDF);
+
+            function export_data() {
+                let data = document.getElementById('invoice');
+                var fp = XLSX.utils.table_to_book(data, { sheet: 'arjun' });
+                XLSX.write(fp, {
+                    bookType: 'xlsx',
+                    type: 'base64'
+                });
+                XLSX.writeFile(fp, 'test.xlsx');
+            }
+        </script>
+
+
+
+
+
+
+        <style>
+              @page {
+                    size: A4;
+                    margin: 0;
+                }
+
+                body {
+                    font-size: 14px;
+                }
+
+                .container {
+                    width: 100%;
+                    max-width: 100%;
+                }
+                .invoice-title h2, .invoice-title h3 {
+                    display: inline-block;
+                }
+
+                .table > tbody > tr > .no-line {
+                    border-top: none;
+                }
+
+                .table > thead > tr > .no-line {
+                    border-bottom: none;
+                }
+
+                .table > tbody > tr > .thick-line {
+                    border-top: 2px solid;
+                }
+
+        </style>
+
+        
+
+        <!-- ============ Main ============ -->
+
+
+    </div>
+</div>
+
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

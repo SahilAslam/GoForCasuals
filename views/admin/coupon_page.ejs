@@ -1,0 +1,71 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<div class="col-sm-12 col-xl-10 container-fluid mt-5">
+    <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Coupon</h6>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Coupon code</th>
+                    <th scope="col">Starting Date</th>
+                    <th scope="col">Expiry Date</th>
+                    <th scope="col">Discount</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% coupon.forEach((coupon, index) => { %>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= coupon.code %></td>
+                        <td><%= coupon.startingDate.toLocaleDateString() %></td>
+                        <td><%= coupon.expiryDate.toLocaleDateString() %></td>
+                        <td><%= coupon.discount %></td>
+                        <td>
+                            <a href="/delete-coupon/<%= coupon._id %> "class="btn border-shadow delete" onclick="confirmdelete(event)">
+                                <span class="text-gradient">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% if(locals.message){%>
+            <div id="msg" class="alert alert-danger text-center">
+               <%= message %>
+            </div>
+        <% } %>
+        <div class="text-center">
+            <a href="/addCoupon"><button class="btn btn-success w-100 mt-2" type="button">Create Coupon</button></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmdelete(event) {
+        event.preventDefault(); // Prevent the link from immediately navigating
+        swal({
+            title: "Do you really want to delete the coupon?",
+            icon: "warning",
+            buttons: {
+                cancel: "Cancel",
+                confirm: "OK"
+            },
+        }).then((confirmed) => {
+            if (confirmed) {
+                swal({
+                title: "Coupon deleted successfully!",
+                icon: "success",
+                }).then(() => {
+                window.location.href = event.target.href; // Navigate to the block_pdt URL
+                });
+            }
+        });
+    }
+</script>
+
+<%- include('partials/_footer') %>

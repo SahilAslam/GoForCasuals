@@ -1,0 +1,151 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+
+<div class="container-fluid pt-4 px-4 m-t-50">
+    <div class="bg-white text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Order Details</h6>
+            
+        </div>
+        <div class="table-responsive">
+            <table id="myTable" class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">Date</th>
+                        <th scope="col">Product Name</th>
+                        <!-- <th scope="col">Name</th> -->
+                        <th scope="col">Amount</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Details</th>
+                    </tr>
+                </thead>
+                <tbody>  
+                    <% orders.reverse().forEach((orders,index) => { %>
+                    <tr>
+                        <td><%= orders.createdAt.toLocaleDateString() %></td>
+                        <td>
+                            <% orders.items.forEach((item, index) => { %>
+                                <%= index+1 %>. <%= item.product.name %> <br>
+                            <% }) %>
+                        </td>
+                        <!-- <td><%= orders.user.name %></td> -->
+                        <td><%= orders.total %></td>
+                        <td>
+                            <% orders.items.forEach((item, index) => { %>
+                                <img src="<%= item.product.photo[0] %>" alt="" width="40px" class="img-thumbnail" > <br>
+                            <% }) %>    
+                        </td>
+                        <td><%= orders.payment_method %></td>
+                        <div class="align-center">            
+                            <td><%= orders.status %> <br> <a data-bs-toggle="modal" data-bs-target="#exampleModal<%= orders._id  %>"><i class="fas fa-pencil-alt align-center" ></i></a></td>
+                        </div>
+                        <td>
+                            <% if (orders.status === 'Delivered' && !orders.returnExpired) { %>
+                                <a class="btn btn-sm btn-primary" href="" data-toggle="modal" data-target="#exampleModal<%= orders._id %>">Return</a>
+                            <% } else if (orders.status !== "Cancelled" && orders.status !== "Delivered") { %>
+                                <a class="btn btn-sm btn-danger" href="" data-toggle="modal" data-target="#exampleModal<%= orders._id %>">Cancel</a>
+                            <% } else if(orders.returnExpired){ %>
+                                <p>Return Not available</p>
+                            <% } else { %>
+                                <p>Order Cancelled</p>
+                            <% } %>
+                        </td>
+                        <td><a href="/orderView/<%= orders._id  %>" class="btn btn-primary">View</a></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<% orders.forEach((orders) =>{ %>
+    <div class="modal fade" id="exampleModal<%= orders._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Comfirm</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            Are you Sure?
+            </div>
+            <div class="modal-footer">
+            
+            <% if (orders.status === 'Delivered' && !orders.returnExpired) { %>
+                <a class="btn btn-sm btn-primary" href="/orderReturned/<%= orders._id %>">Return Order</a>
+              <% } else if (orders.status !== "Cancelled" && orders.status !== "Delivered" && orders.status !== "Returned") { %>
+                <a class="btn btn-sm btn-primary" href="/orderCancelled/<%= orders._id %>">Cancel Order</a>
+              <% } %>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+<% }) %>
+
+
+<style>
+    .align-center {
+    display: flex;
+    justify-content: center;
+}
+</style>
+
+<script>
+
+
+    function confirmdelete(event) {
+    event.preventDefault(); // Prevent the link from immediately navigating
+  
+    swal({
+      title: "Do you really wanted to cancel your order?",
+      icon: "warning",
+      buttons: {
+        cancel: "Cancel",
+        confirm: "OK"
+      },
+    }).then((confirmed) => {
+      if (confirmed) {
+        swal({
+          title: "Order cancelled successfully!",
+          icon: "success",
+        }).then(() => {
+          window.location.href = event.target.href; // Navigate to the block_pdt URL
+        });
+      }
+    });
+  }
+  
+  </script>
+
+<script>
+    setTimeout(() => {
+      document.getElementById("msg").style.display = "none";
+    }, 1000);
+    
+  
+    $(document).ready(function() {
+      $('#myTable').DataTable();
+    })
+    let table= new DataTable('#myTable')
+   
+  </script>
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

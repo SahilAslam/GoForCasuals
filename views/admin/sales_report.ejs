@@ -1,0 +1,169 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+            
+    <style>
+        .table-striped {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2)) !important;
+            background-size: 20px 20px !important;
+            background-position: 0 0, 10px 10px !important;
+        }
+
+        .date-filter-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .date-filter-form label {
+            margin-right: 10px;
+        }
+
+        .date-filter-form input[type="submit"] {
+            margin-left: 10px;
+        }
+        .custom-button {
+            background-color: coral;
+            color: azure;
+
+        }
+    </style>
+
+    <div class="row tm-content-row m-2 mt-3">
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-12 col-md-6 col-xl-8">
+                    <form action="/adminSalesFilter" method="post" class="date-filter-form">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 col-sm-12 text-right mb-2">
+                                <h5>Filter Orders</h5>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <label for="fromDate">FROM:</label>
+                                        <input type="date" value="newDate.[0]" name="fromdate" id="fromDate">
+                                    </div>
+                                    <div>
+                                        <label for="toDate">TO:</label>
+                                        <input type="date" value="newDate.[1]" name="todate" id="toDate">
+                                    </div>
+                                    <div>
+                                        <input type="submit" value="Submit" class="btn-sm btn text-light" style="background-color: rgb(216, 149, 5) ;margin-top: 30px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-12 col-lg-8 col-xl-12 tm-block-col">
+            <div class="tm-bg-primary tm-block tm-block-products">
+                <div class="tm-product-table-container">
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-6"></div>
+                        <div class="col-sm-12 col-md-6"></div>
+                    </div>
+                    <table class="table table-bordered" style="width: 100%" id="productTable" >
+
+                        <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Order Id</th>
+                            <th scope="col">User Name</th>
+                            <th scope="col">Products</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Payment Method</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% filteredOrders.forEach((order) => { %>
+                        <tr>
+                            <td>
+                            <%= order.createdAt.toLocaleDateString() %>
+                            </td>
+                            <td>
+                            <%= order._id %>
+                            </td>
+                            <td>
+                            <%= order.user?.name %>
+                            </td>
+                            <td>
+                                <% order.items.forEach((item) => { %>
+                                <div>
+                                    <%= item.product.name %>
+                                </div>
+                                <% }) %>
+                                </td>
+                            <td>
+                            <% order.items.forEach((item) => { %>
+                            <div>
+                                <%= item.quantity %>
+                            </div>
+                            <% }) %>
+                            </td>
+                            <td>
+                            <% order.items.forEach((item) => { %>
+                            <div>
+                                <%= item.price %>
+                            </div>
+                            <% }) %>
+                            </td>
+                            <td>
+                            <%= order.payment_method %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                        </tbody>
+                    </table>
+                    
+                </div>
+                <!-- table container -->
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var productTable = document.getElementById('productTable');
+
+            var dataTable = new DataTable(productTable, {
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        className: 'text-danger'
+                    },
+                    {
+                        extend: 'print',
+                        className: 'text-danger'
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'text-danger'
+                    }
+                ]
+
+            });
+        });
+    </script>
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

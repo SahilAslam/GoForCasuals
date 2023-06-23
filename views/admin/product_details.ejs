@@ -1,0 +1,146 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+            
+    <style>
+        .table-striped {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2)) !important;
+            background-size: 20px 20px !important;
+            background-position: 0 0, 10px 10px !important;
+        }
+
+        .date-filter-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .date-filter-form label {
+            margin-right: 10px;
+        }
+
+        .date-filter-form input[type="submit"] {
+            margin-left: 10px;
+        }
+        .custom-button {
+            background-color: coral;
+            color: azure;
+
+        }
+    </style>
+
+<div class="col-sm-12 col-xl-10 container-fluid mt-5">
+    <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Products Details</h6>
+        <table id="myTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">product Name</th>
+                    <th scope="col">price</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">category</th>
+                    <th scope="col">description</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <% product_data.forEach((product, index) => { %>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= product.name %></td>
+                        <td><%= product.price %></td>
+                        <td><%= product.stock %></td>
+                        <td><%= product.category %></td>
+                        <td><%= product.description %></td>
+                        <td><img style="width: 100px;" src="<%= product.photo[0] %>" alt=""></td>
+                        <td>
+                            <a href="/update_product/<%= product._id %> " id=""
+                                class="btn border-shadow delete">
+                                <span class="text-gradient">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </span>
+                            </a>
+                            <a  href="/delete_product/<%= product._id %>" class="btn border-shadow delete" onclick="confirmdelete(event)"> 
+                                <span class="text-gradient">  
+                                    <i class="fas fa-times"></i>                                 
+                                </span>
+                            </a>
+                            <% if(product.isBlocked) { %>
+                              <a href="/unblock_product/<%= product._id %>" class="btn btn-success btn-sm border-shadow update" onclick="confirmdelete(event)">Unblock</a>
+                            <% } else { %>  
+                              <a href="/block_product/<%= product._id %>" class="btn btn-danger btn-sm border-shadow update" onclick="confirmdelete(event)">Block</a>
+                            <% } %>
+                           
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <div class="text-center">
+            <a href="/addProduct"><button class="btn btn-success w-100 mt-2" type="button">Add New Products</button></a>
+           
+        </div>
+    </div>
+    
+</div>
+
+<script>
+
+
+  function confirmdelete(event) {
+  event.preventDefault(); // Prevent the link from immediately navigating
+
+  swal({
+    title: "Do you really want to block the product?",
+    icon: "warning",
+    buttons: {
+      cancel: "Cancel",
+      confirm: "OK"
+    },
+  }).then((confirmed) => {
+    if (confirmed) {
+      swal({
+        title: "Product blocked successfully!",
+        icon: "success",
+      }).then(() => {
+        window.location.href = event.target.href; // Navigate to the block_pdt URL
+      });
+    }
+  });
+}
+
+</script>
+
+
+
+<script>
+  setTimeout(() => {
+    document.getElementById("msg").style.display = "none";
+  }, 1000);
+  
+
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  })
+  let table= new DataTable('#myTable')
+ 
+</script>
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>
+
+
+

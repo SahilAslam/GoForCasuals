@@ -1,0 +1,73 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<!-- Form Start -->
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4 align-items-center justify-content-center mt-5">
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Add Banner</h6>
+        <form action="/addBanner" method="POST" name="basic" enctype="multipart/form-data" onsubmit="return ValidateBasic()" >
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              name="name"
+              id="exampleInputPassword1"
+            />
+          </div>
+        
+        
+
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">photo</label>
+            <input
+              type="file"
+              class="form-control"
+              name="photo"
+              multiple
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Date</label>
+            <input
+              type="date"
+              class="form-control"
+              name="date"
+           
+              id="exampleInputPassword1"
+            />
+          </div>
+        
+
+          <button type="submit" class="btn btn-primary mt-5"  >
+           Add Banner
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Form End -->
+<script>
+  function ValidateBasic(){
+    
+    var name = document.forms["basic"]["name"].value.trim();
+   
+  
+    
+
+    if (name == "") {
+      alert("name must be filled out");
+        return false;
+    }
+   
+    return true; 
+}
+  
+</script>
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

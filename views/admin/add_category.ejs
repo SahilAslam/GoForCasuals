@@ -1,0 +1,33 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<div class="col-sm-12 col-xl-6 container-fluid mt-5">
+    <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Add Category</h6>
+        <form action="/add_category" method="post">
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Category</label>
+                <input name="category" class="form-control form-control-lg mb-3" type="text" placeholder=""
+                aria-label=".form-control-lg example">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Description</label>
+                <input type="text" name="description" class="form-control form-control-lg" id="exampleInputPassword1">
+            </div>
+            <% if(locals.message){%>
+                <div id="msg" class="alert alert-danger text-center">
+                   <%= message %>
+                </div>
+            <% } %>
+            <button class="btn btn-lg btn-outline-success w-100 mt-2" type="submit">Add Category</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    setTimeout(() => {
+        document.getElementById("msg").style.display = 'none'
+    },3000)
+</script>
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

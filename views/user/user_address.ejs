@@ -1,0 +1,278 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+	
+	<!-- Product -->
+	<div class="bg0 m-t-100 p-b-140">
+		<div class="container">
+			<div class="flex-w flex-sb-m p-b-52">
+
+				
+				<!-- Search product -->
+				<div class="dis-none panel-search w-full p-t-10 p-b-15">
+					<div class="bor8 dis-flex p-l-15">
+						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+							<i class="zmdi zmdi-search"></i>
+						</button>
+
+						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+					</div>	
+				</div>
+			</div>
+
+			<!-- ============ Main ============ -->
+
+            <section class="page-header">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="content">
+                                <h1 class="page-name" style="font-size: 40px; font-weight: bold; margin-bottom: 10px; color: #222;">ADD ADDRESS</h1>
+                                <!-- <ol class="breadcrumb mt-2">
+                                    <li><a href="index.html">Home</a></li>
+                                    <li class="active">checkout</li>
+                                </ol> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="page-wrapper">
+                <div class="checkout shopping">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="block billing-details">
+                                    <form class="checkout-form" action="/userAddress" method="post" id="checkout-form">
+										<div class="form-group p-b-5 same-line">
+											<div class="form-group same-line-in">
+												<label for="full_name"></label>
+												<input type="text" name="name" class="form-control" id="full_name"
+													placeholder="Full Name:" style="width:370px; height: 50px;">
+											</div>
+											<div class="form-group p-l-10 same-line-in">
+												<label for="user_address"></label>
+												<input type="tel" name="phone" class="form-control" id="user_address"
+													placeholder="Phone Number:"  style="width:370px; height: 50px;">				                                 
+											</div>
+                                        </div>
+                                        
+										<div class="form-group">
+											<label for="user_address"></label>
+											<input type="text" name="address" class="form-control" id="user_address"
+												placeholder="Address:" style="height: 70px;">	                                           
+										</div>
+										<div class="form-group p-b-5 same-line">
+											<div class="form-group same-line-in">
+												<label for="user_city"></label>
+												<input type="text" name="city" class="form-control" id="user_city"
+													name="city" placeholder="City: " value="" style="width:370px; height: 50px;">
+											</div>
+											<div class="form-group p-l-10 same-line-in">
+												<label for="user_country"></label>
+												<input type="text" name="state" class="form-control" id="user_country"
+													placeholder="State: " style="width:370px; height: 50px;">
+											</div>                                           
+                                        </div>
+                                        <div class="checkout-country-code clearfix">
+                                            <div class="form-group">
+                                                <label for="user_post_code"></label>
+                                                <input type="tel" name="pincode" class="form-control" id="user_post_code" placeholder="Pin Code: " value="" style="height: 50px;">
+                                            </div>
+                                        </div>
+                                        <div class="block">
+                                            <div class="checkout-product-details">
+                                                <div class="payment">
+                                                    <div class="card-details">
+                                                        <button type="submit" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointe mt-20">Add Address</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <style>
+                                .address-item {
+                                    border-bottom: 1px solid #ccc;
+                                    padding-bottom: 10px;
+                                    margin-bottom: 10px;
+                                }
+								.same-line{
+									display: table 
+								}
+								.same-line-in{
+									display: table-cell
+								}
+                            </style>
+                            
+                            <div class="col-md-4 recent-address-container" style="margin-left: auto; margin-right: 0; padding-left: 80px;">
+                                <div class="product-checkout-details">
+                                    <div class="block">
+                                        <h4 class="widget-title" style="font-size: 30px; font-weight: bold; margin-bottom: 10px; color: #222">Recent Address</h4>
+                                        
+                                        <div class="address-item">
+                                            <label>                                                
+                                                <span>
+                                                    <% if (data && data.length > 0) { %>
+														<ul>
+															<% data.forEach((address) => { %>
+																<li><span style="color: #717fe0;">Name: </span><%= address.name %></li>
+																<li><span style="color: #717fe0;">Phone: </span><%= address.phone %></li>
+																<li><span style="color: #717fe0;">Address: </span><%= address.address %></li>
+																<li><span style="color: #717fe0;">Pin Code: </span><%= address.pincode %></li>
+																<li><span style="color: #717fe0;">City: </span><%= address.city %></li>
+																<li><span style="color: #717fe0;">State: </span><%= address.state %></li>
+																<a href="" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal<%= address._id %>">Edit Address</a>
+																<a href="/checkout/<%= address._id %>" class="flex-c-m stext-101 cl0 size-101 bg3 bor2 hov-btn3 p-lr-15 trans-04">Deliver here</a>
+																<br>
+															<% }); %>
+														</ul>
+                                                    <% } else { %>
+														<p>No address found</p>
+													<% } %>	
+                                                </span>                                        
+                                            </label>                                          
+                                        </div>
+                                        
+                                        <div class="verified-icon"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                </div>
+            </div>
+        </div>
+               
+			<!-- Load more -->
+			<!-- <div class="flex-c-m flex-w w-full p-t-45">
+				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+					Load More
+				</a>
+			</div> -->
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<% data.forEach((address) => { %>
+		<div class=" modal fade m-t-100" id="exampleModal<%= address._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered align-left">
+			<div class="modal-content">
+			  <div class="modal-body p-t-25 p-b-25 p-l-25 p-r-25">
+				  <form class="checkout-form" action="/update_address/<%= address._id %>" method="post" id="checkout-form">
+					  <div class="form-group">
+						  <label for="full_name">Full Name</label>
+						  <input type="text" name="name" class="form-control" id="full_name" placeholder="" value="<%= address.name %>">
+					  </div>
+					  <div class="form-group">
+						  <label for="address">Address</label>
+						  <textarea name="address" class="form-control" id="address" placeholder=""><%= address.address %></textarea>
+					  </div>
+					  <div class="form-group">
+						  <label for="user_address">Phone Number</label>
+						  <input type="tel" name="phone" class="form-control" id="user_address"
+							  placeholder="" value="<%= address.phone %>">
+					  </div>
+					  <div class="checkout-country-code clearfix">
+						  <div class="form-group">
+							  <label for="user_post_code">Pin Code</label>
+							  <input type="tel" class="form-control" id="user_post_code"
+								  name="pincode" value="<%= address.pincode %>">
+						  </div>
+						  <div class="form-group">
+							  <label for="user_city">City</label>
+							  <input type="text" class="form-control" id="user_city"
+								  name="city" value="<%= address.city %>">
+						  </div>
+					  </div>
+					  <div class="form-group">
+						  <label for="user_country">State</label>
+						  <input type="text" name="state" class="form-control" id="user_country"
+							  placeholder="" value="<%= address.state %>">
+					  </div>
+					  <div class="block">
+						  <div class="checkout-product-details">
+							  <div class="payment">
+								  <div class="card-details">
+									  <button type="submit" class="btn btn-main mt-20 btn-info">Update</button>
+								  </div>
+							  </div>
+						  </div>
+					  </div>
+				  </form>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		<% }); %>
+		
+<%- include('partials/_footerbar') %>
+<style>
+	.recent-address-container {
+        text-align: left;
+    }
+
+    .address-item {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+    .address-item:last-child {
+        border-bottom: none;
+    }
+
+    .address-item label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .address-item ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .address-item li {
+        margin-bottom: 5px;
+        text-align: left;
+    }
+
+    .address-item .btn {
+        display: inline-block;
+        margin-right: 5px;
+        margin-top: 5px;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        text-decoration: none;
+        text-align: left;
+    }
+
+    .address-item .btn.btn-primary {
+        background-color: #337ab7;
+        color: #fff;
+    }
+
+    .address-item .btn.btn-success {
+        background-color: #5cb85c;
+        color: #fff;
+    }
+
+	/* .modal-align-left {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
+
+	.modal-dialog {
+		margin: 0;
+	} */
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<%- include('partials/_footer') %>

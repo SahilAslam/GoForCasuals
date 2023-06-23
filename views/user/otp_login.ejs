@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Login 07</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="user_login_assets/css/style.css">
+
+</head>
+
+<body>
+	<section class="ftco-section ">
+		<div class="container">
+			<div class="col-md-6 text-center mb-4" style="margin-left: 270px; border-bottom: 2px solid #222">
+				<h2 class="heading-section">LOGIN</h2>
+			</div>
+			<div class="row justify-content-center">
+				<div class="login-wrap p-4 p-lg-5">
+					<form action="/send-otp" method="post" class="signin-form">
+						<div class="form-group mb-3">
+							<label class="label" for="name">Phone No:</label>
+							<input type="tel" name="phone" class="form-control" placeholder="Phone" required>
+						</div>
+						<div class="form-group mb-3 bg-dark">
+							<button type="submit" value="submit" class="form-control btn text-white submit px-3" style="background-color: #717fe0;">GET OTP</button>
+						</div>
+					</form>	
+						<% if(locals.message){%>
+							<div id="msg" class="alert alert-danger text-center">
+							   <%= message %>
+							</div>
+						<% } %>
+					<form action="/verify-otp" method="post" novalidate="novalidate">
+						<div class="form-group mb-3">
+							<label class="label" for="name">OTP</label>
+							<input type="tel" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required>
+						</div>	
+						<div class="form-group bg-dark ">
+							<button type="submit" value="submit" class="form-control btn text-white submit px-3" style="background-color: #717fe0;">SIGN IN</button>
+						</div>
+						<a href="/login" class=" text-dark" style="border-bottom: 2px solid #000">LOGIN WITH EMAIL</a>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="user_login_assets/js/jquery.min.js"></script>
+	<script src="user_login_assets/js/popper.js"></script>
+	<script src="user_login_assets/js/bootstrap.min.js"></script>
+	<script src="user_login_assets/js/main.js"></script>
+	<script>
+		setTimeout(()=>{
+			document.getElementById("msg").style.display='none'
+		},2000)
+	</script>
+
+</body>
+
+</html> 

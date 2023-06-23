@@ -1,0 +1,64 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+<div class="col-sm-12 col-xl-10 container-fluid mt-5">
+    <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Categories</h6>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% find_category.forEach((category, index) => { %>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= category.category %></td>
+                        <td><%= category.description %></td>
+                        <td>
+                            <a href="/delete_category/<%= category.id %> "class="btn border-shadow delete" onclick="confirmdelete(event)">
+                                <span class="text-gradient">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <div class="text-center">
+            <a href="/add_category"><button class="btn btn-success w-100 mt-2" type="button">Add Category</button></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmdelete(event) {
+        event.preventDefault(); // Prevent the link from immediately navigating
+        swal({
+            title: "Do you really want to block the product?",
+            icon: "warning",
+            buttons: {
+                cancel: "Cancel",
+                confirm: "OK"
+            },
+        }).then((confirmed) => {
+            if (confirmed) {
+                swal({
+                title: "Product blocked successfully!",
+                icon: "success",
+                }).then(() => {
+                window.location.href = event.target.href; // Navigate to the block_pdt URL
+                });
+            }
+        });
+    }
+</script>
+
+<%- include('partials/_footer') %>
+
+

@@ -1,0 +1,68 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+
+    <!-- Product -->
+	<div class="bg0 m-t-23 p-b-140">
+		<div class="container">
+			<div class="flex-w flex-sb-m p-b-52">
+				
+				<!-- Search product -->
+				<div class="dis-none panel-search w-full p-t-10 p-b-15">
+					<div class="bor8 dis-flex p-l-15">
+						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+							<i class="zmdi zmdi-search"></i>
+						</button>
+
+						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+					</div>	
+				</div>
+
+			</div>
+
+			<!-- ============ Main ============ -->
+
+					<!--================Checkout Area =================-->
+					<section class="checkout_area section_gap">
+						<div class="container">
+							<div class="billing_details">
+								<div class="row ">
+										<div class="col-md-12"> 
+											<div class = "main">
+												<div class="row padder"> 
+													<div class="col-md-9"> 
+														<h1> Your Paypal Payment was: <%= payment.state %></h1>
+                                                        <h2> Payment Id: <%= payment.id %> </h2> 
+                                                        <hr>
+                                                        
+                                                        <hr> 
+                                                        <a href="/shop"> 
+                                                        <button class="btn btn-warning btn-lg"> Contune Shopping </button> 
+                                                        </a> 
+													</div> 
+												</div> 
+											</div>
+										</div> 
+								</div>
+							</div>
+						</div>
+					</section>
+   
+                    <!--================End Checkout Area =================-->
+
+	        <!-- ============ Main ============ -->
+
+ 
+        </div>
+               
+			<!-- Load more -->
+			<!-- <div class="flex-c-m flex-w w-full p-t-45">
+				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+					Load More
+				</a>
+			</div> -->
+		
+	</div>
+
+    
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

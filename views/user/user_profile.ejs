@@ -1,0 +1,273 @@
+<%- include('partials/_header') %>
+<%- include('partials/_navbar') %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<section style="background-color: #eee;" class="m-t-100">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center shadow">
+              <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                class="rounded-circle img-fluid" style="width: 150px;"> -->
+              <h5 class="my-3"><%= userData.name %></h5>
+              <p class="text-muted mb-1"><%= userData.email %></p>
+              <p class="text-muted mb-4"><%= userData.phone %></p>
+              <div class="d-flex justify-content-center mb-2">
+                <!-- <a href="" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 " data-notify="0">
+					        <i class="zmdi zmdi-favorite-outline"></i>
+				        </a> -->
+                <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10" >
+					        <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Add Address</a>
+
+				        </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-4 mb-lg-0 ">
+            <div class="card-body p-0 ">
+              <ul class="list-group list-group-flush rounded-3">
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fas fa-globe fa-lg text-warning"></i>
+                  <a href="/orderDetails" style="color: #333333;"><p class="mb-0">My orders</p></a>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
+                  <a href="" style="color: #333333;"><p class="mb-0">Manage address</p></a>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fab fa-github fa-lg" style="color: #55acee;"></i>
+                  <a href="/wallet" style="color: #333333;"><p class="mb-0">Wallet</p></a>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="zmdi zmdi-shopping-cart" style="color: #333333;"></i>
+                  <a href="/cart" style="color: #333333;"><p class="mb-0">Cart</p></a>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
+                  <a href="/logout" style="color: #333333;"><p class="mb-0">Sign out</p></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4 shadow">
+            <div class="card-body">
+              <h2 class="h3 mb-3 text-black">My Info</h2>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Username</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0"><%= userData.username %></p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0"><%= userData.email %></p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Mobile</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">(+91) <%= userData.phone %></p>
+                </div>
+              </div>
+              <hr>
+              <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04" data-bs-toggle="modal" data-bs-target="#exampleModal<%= user._id %>">Edit details</button>
+            </div>
+          </div>
+
+          <div class="col-md-12 mb-5 bg-light shadow">
+            
+            <div class="p-lg-5">
+              <h2 class="h3 mb-3 text-black">My Address</h2>
+              <% addressData.forEach((address, index) => { %>
+                <div class="border p-3 mb-1">
+                  <h3 class="h6 mb-0">
+                    <a class="d-block" >
+                      <p class="mb-0">
+                        Name: <%= address.name %><br> 
+                        Phone: <%= address.phone %><br> 
+                        Address: <%= address.state %><br> 
+                        Pin Code: <%= address.city %><br> 
+                        City: <%= address.address %><br> 
+                        State: <%= address.pincode %><br>
+                      </p>
+                    </a>
+                  </h3>
+
+
+
+          
+                <!-- Address Modal -->
+                <!-- Modal -->
+                <% addressData.forEach((address) => { %>
+                  <div class=" modal fade m-t-50" id="exampleModal<%= address._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered align-left">
+                    <div class="modal-content">
+                      <div class="modal-body p-t-25 p-b-25 p-l-25 p-r-25">
+                        <form class="checkout-form" action="/user-profile-address-edit/<%= address._id %>" method="post" id="checkout-form">
+                          <div class="form-group">
+                            <label for="full_name">Full Name</label>
+                            <input type="text" name="name" class="form-control" id="full_name" placeholder="" value="<%= address.name %>">
+                          </div>
+                          <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea name="address" class="form-control" id="address" placeholder=""><%= address.address %></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="user_address">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control" id="user_address"
+                              placeholder="" value="<%= address.phone %>">
+                          </div>
+                          <div class="checkout-country-code clearfix">
+                            <div class="form-group">
+                              <label for="user_post_code">Pin Code</label>
+                              <input type="tel" class="form-control" id="user_post_code"
+                                name="pincode" value="<%= address.pincode %>">
+                            </div>
+                            <div class="form-group">
+                              <label for="user_city">City</label>
+                              <input type="text" class="form-control" id="user_city"
+                                name="city" value="<%= address.city %>">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="user_country">State</label>
+                            <input type="text" name="state" class="form-control" id="user_country"
+                              placeholder="" value="<%= address.state %>">
+                          </div>
+                          <div class="block">
+                            <div class="checkout-product-details">
+                              <div class="payment">
+                                <div class="card-details">
+                                  <button type="submit" class="btn btn-main mt-20 btn-info">Update</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                  <% }); %>
+                <!-- /Address Modal -->
+          
+                
+              </div>
+              <div class="d-flex" >
+                <button type="submit" data-bs-toggle="modal" data-bs-target="#exampleModal<%= address._id %>"  class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 mb-4 mt-2">Edit</button> 
+                <a href="/delete-address/<%= address._id %>"><button type="button" class="ml-2 flex-c-m stext-101 cl0 size-101 bg3 bor2 hov-btn3 p-lr-15 trans-04 mb-4 mt-2" >Delete</button></a>
+                 
+              </div>
+              <% }) %>
+            </div>
+          </div>
+
+
+          <div class="modal fade" id="exampleModal<%= user._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+              <div class="modal-body">
+                <form class="checkout-form" action="/userDetailsEdit/<%= user._id %>" method="post" id="checkout-form">
+                  <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" name="name" class="form-control" id="full_name" placeholder="" value="<%= user.name %>" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea name="email" class="form-control" id="address" placeholder=""><%= user.email %></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="user_address">Phone Number</label>
+                    <input type="tel" name="mobile" class="form-control" id="user_address"
+                      placeholder="" value="<%= user.phone %>" required>
+                  </div>
+        
+        
+                  <div class="block">
+                    <div class="checkout-product-details">
+                      <div class="payment">
+                        <div class="card-details">
+                          <button type="submit" class="btn btn-main mt-20 btn-info">Update</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              </div>
+            </div>
+            </div>
+          <!-- Modal -->
+          
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+              <div class="modal-body">
+                <form class="checkout-form" action="/user-profile-address" method="post" id="checkout-form">
+                  <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" name="name" class="form-control" id="full_name" placeholder="" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea name="address" class="form-control" id="address" placeholder="" required></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="user_address">Phone Number</label>
+                    <input type="tel" name="phone" class="form-control" id="user_address"
+                      placeholder="" required>
+                  </div>
+                  <div class="checkout-country-code clearfix">
+                    <div class="form-group">
+                      <label for="user_post_code">Pin Code</label>
+                      <input type="tel" class="form-control" id="user_post_code"
+                        name="pincode" value="" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="user_city">City</label>
+                      <input type="text" class="form-control" id="user_city"
+                        name="city" value="" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="user_country">State</label>
+                    <input type="text" name="state" class="form-control" id="user_country"
+                      placeholder="" required>
+                  </div>
+                  <div class="block">
+                    <div class="checkout-product-details">
+                      <div class="payment">
+                        <div class="card-details">
+                          <button type="submit" class="btn btn-main mt-20 btn-info">Add Address</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              </div>
+            </div>
+            </div>
+            
+          <!-- /Address Modal -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+<%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>

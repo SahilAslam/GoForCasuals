@@ -1,0 +1,441 @@
+<%- include('partials/_header') %>
+    <%- include('partials/_navbar') %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <!-- Product -->
+        <div class="bg0 m-t-50 p-b-140">
+          <div class="container">
+              <div class="flex-w flex-sb-m p-b-52">
+
+                  <!-- Search product -->
+                  <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                      <div class="bor8 dis-flex p-l-15">
+                          <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                              <i class="zmdi zmdi-search"></i>
+                          </button>
+
+                          <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product"
+                              placeholder="Search">
+                      </div>
+                  </div>
+
+              </div>
+
+              <!-- ============ Main ============ -->
+
+              <section class="page-header">
+
+              </section>
+
+              <div class="page-wrapper">
+                  <div class="checkout shopping">
+                      <div class="container">
+                          <div class="row ">
+                              <form class="checkout-form" action="/checkout/<%=address._id %>" method="post" id="checkout-form">
+                                <div class="col-md-12">
+                                    <h4 class="widget-title mt-5" style="color: #717fe0; font-size: 30px; ">Billing Details</h4>
+                                    <div class="block billing-details mt-3">
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <div class="col-md-12">
+                                                    <div class="d-flex mb-3">
+                                                        
+                                                        <div class="border p-2" style="color: rgb(80, 80, 80);">
+                                                            <b>
+                                                                <%= address.name%>
+                                                            </b>,<br>
+                                                            <%= address.address%>, <br>
+                                                            <%= address.city%>, <%= address.state%>, <br>
+                                                            Zipcode: <%= address.pincode%>, Mobile: <%= address.phone%>
+                                                        </div>
+                                                        <!-- <div class="ml-auto pr-3 d-flex"> -->
+                                                            <div class="p-l-100">
+                                                              <a  href="/userAddress" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 mb-2"
+                                                                style="letter-spacing: 0.1rem;cursor: pointer; color: #fff;">Change Address</a>
+                                                              <a  href="/userAddress" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 mb-2"
+                                                                style="letter-spacing: 0.1rem; cursor: pointer; color: #fff;">Add New Address</a>
+                                                            </div>
+                                                            <div class="ml-3 mt-1">
+                                                              <a data-toggle="modal" data-target="#deleteAddr<%= address.id%>">
+                                                                <div class="" style="width: fit-content;">
+                                                                  <span class=" p-3"></span>
+                                                              </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>                                            
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                        <div class="block mt-5">
+                                            <h2 class="widget-title" style="color: #717fe0;">Payment Methods</h2>
+                                            <div class="payment-methods mt-4">
+                                                
+                                                <div class="payment-method mt-2">
+                                                    <input class="payment-method-input" type="radio" name="payment"
+                                                        id="card-payment" value="paypal" >
+                                                    <label class="payment-method-label" for="card-payment">
+                                                        <span class="payment-method-icon"><i
+                                                                class="fa fa-credit-card"></i></span>
+                                                        Paypal
+                                                    </label>
+                                                </div>
+                                                <div class="payment-method">
+                                                    <input class="payment-method-input" type="radio" name="payment"
+                                                        id="razorpay-payment" value="razorpay">
+                                                    <label class="payment-method-label" for="razorpay-payment">
+                                                        <span class="payment-method-icon"><i class="fa fa-money"></i></span>
+                                                        Razorpay
+                                                    </label>
+                                                </div>
+                                                <div class="payment-method">
+                                                    <input class="payment-method-input" type="radio" name="payment"
+                                                        id="cod-payment" value="cod">
+                                                    <label class="payment-method-label" for="cod-payment">
+                                                        <span class="payment-method-icon"><i class="fa fa-money"></i></span>
+                                                        Cash on Delivery
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="mt-5 flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointe" >
+                                                Place Order
+                                            </button>                                           
+                                        </div> 
+                                    </div>
+                              </form>
+                              <div class="col-md-4 ml-auto border-dark rounded">
+                                  <div class="product-checkout-details">
+                                      <div class="block pt-3 pb-3">
+                                          <h4 class="widget-title mb-2" style="color: #717fe0;">Order Summary</h4>
+                                            <% cart.products.forEach(function(product) { %>
+                                                <div class="media product-card ">
+                                                    <a class="pull-left mt-4" href="product-single.html">
+                                                        <img class="media-object img-thumbnail"
+                                                            src="/<%= product.productId.photo[0] %>" alt="image"
+                                                            width="70px" />
+                                                    </a>
+                                                    <div class="media-body p-4">
+                                                        <h4 class="media-heading"
+                                                            style="font-weight: bold;font-size: 15px;">
+                                                            <%= product.productId.name %><a
+                                                                    href="product-single.html"></a>
+                                                        </h4>
+                                                        <p class="price">
+                                                            ₹&nbsp; <%= product.productId.price %>
+                                                        </p>
+                                                        <span>Quantity: <%= product.quantity %></span>
+
+                                                        <td class="total price">
+                                                            <% var total=product.quantity * product.productId.price; %>
+                                                            <p id="product-total-price-<%= product.productId._id %>" class="item-total">
+                                                                <%= total %>
+                                                            </p>
+                                                        </td>
+                                                        <hr>
+                                                        <!-- <span class="remove">Remove</span> -->
+                                                    </div>                                                
+                                                </div>                                                                                                   
+                                            <% }); %>
+
+                                            <div class="discount-code">
+                                              <p style="font-weight: bold;font-size: 15px;">Have a discount ?
+                                                  <a data-toggle="modal" data-target="#coupon-modal"
+                                                      href="#!">enter it here</a>
+                                              </p>
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-body d-flex">
+                                                    <form id="couponForm" action="/redeemCoupon" method="post"
+                                                        class="flex-grow-1">
+                                                        <div class="form-group d-flex">
+                                                            <label for="couponCode" class="mr-2">Coupon Code</label>
+                                                            <span style="margin-left:10px;"> <a href="" data-toggle="modal"
+                                                                data-target="#exampleModal">
+                                                                Available coupons
+                                                                </a></span>
+                                                            <input type="text" class="form-control" name="coupon"
+                                                                id="couponCode" placeholder="Enter the coupon code">
+                                                                            
+                                                        </div>
+                                        
+                                                        <div id="couponMessage"
+                                                            style="padding-bottom: 10px; color: darkred;"></div>
+                                        
+                                                        <div id="couponMessage1"
+                                                            style="padding-bottom: 10px; color: rgb(7, 126, 13);"></div>
+                                        
+                                                        <button type="button" onclick="redeem()"
+                                                            class="btn btn-primary ml-auto">Redeem</button>
+                                                    </form>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="ml-auto mt-3 mb-3">
+                                                <button type="button" class="btn btn-primary" onclick="walletPay()">Use wallet to
+                                                   pay</button>
+                                                <span id="wallet"></span>
+                                                <!-- <i id="wallet_remove" onclick="deleteWallet()">
+                                                   <span></span>
+                                                               </i> -->
+               
+               
+                                                <style>
+                                                   .form-control::placeholder {
+                                                      font-weight: bold;
+                                                   }
+                                                </style>
+               
+                                            </div>
+
+                                            <ul class="summary-prices">
+                                                <li>
+                                                    <span style="font-weight: bold;font-size: 15px;">
+                                                        Subtotal:
+                                                    </span>
+                                                    <span class="price" id="subtotal"></span>
+                                                </li>
+                                                <li>
+                                                    <span style="font-weight: bold;font-size: 15px;">
+                                                        Shipping:
+                                                    </span>
+                                                    <span>Free</span>
+                                                </li>
+                                            </ul>
+                                            <div class="summary-total">
+                                                <span style="font-weight: bold;font-size: 30px;">
+                                                    Total: 
+                                                </span>
+                                                <span id="totalprice" style="font-weight: bold;font-size: 25px;"></span>
+                                            </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div> 
+      
+      <!-- Modal -->
+      <div class="modal fade" id="coupon-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+           <div class="modal-content">
+              <div class="modal-body">
+                 <form>
+                    <div class="form-group">
+                       <input class="form-control" type="text" placeholder="Enter Coupon Code">
+                    </div>
+                    <button type="submit" class="btn btn-main">Apply Coupon</button>
+                 </form>
+              </div>
+           </div>
+        </div>
+     </div>
+
+     <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header" style="text-align: center;">
+                <h2 class="modal-title" id="exampleModalLabel" style="font-weight: bold; color: black;">Available Coupon</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <% coupon.forEach(element => { %>
+                    <% if (!(new Date(element.date) < new Date()) || element.status !== true) { %>
+                        <p style="color: black; font-family: 'Times New Roman', Times, serif; font-weight: bolder;"><%= element.code %></p>
+                    <% } %>
+                    <% }) %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-main" data-dismiss="modal"  style="color:beige">Close</button>
+            
+            </div>
+            </div>
+        </div>
+        </div>
+
+    
+        <style>
+            .address-item {
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+
+            .same-line {
+                display: table
+            }
+
+            .same-line-in {
+                display: table-cell
+            }
+        </style>
+
+        <script>
+        //setting subtotal
+            const setSubtotal = () => {
+                const itemTotal = document.getElementsByClassName('item-total')
+                let subtotal = 0;
+                for (let i = 0; i < itemTotal.length; i++) {
+
+                    subtotal += Number(itemTotal[i].innerHTML)
+                }
+                document.getElementById('subtotal').innerHTML = subtotal;
+                document.getElementById('totalprice').innerHTML = subtotal;
+            }
+            setSubtotal();
+        // <!--===============================================================================================-->
+
+        //redeem coupon
+            function redeem() {
+                var formData = $('#couponForm').serialize();
+        
+                $.ajax({
+                url: "/redeemCoupon",
+                type: "POST",
+                data: formData,
+                success: function(response) {                    
+                    // Handle the response here                    
+                    handleCouponResponse(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Coupon request failed. Status:', status);
+                }
+                });
+            }
+
+            function handleCouponResponse(response) {
+                var couponMessage = document.getElementById('couponMessage');
+                var couponCodeInput = document.getElementById('couponCode');
+                var totalElement = document.getElementById('totalprice');
+            
+                if (couponCodeInput.value.trim() === '') {
+                // Clear the message if the coupon code input is empty
+                couponMessage.textContent = '';
+                return;
+                }
+            
+                if (response.success) {
+                // Coupon is available, update the message and subtract the coupon value from the total
+                var couponValue = response.amount;
+                var total = parseFloat(totalElement.textContent);
+                var updatedTotal = total - couponValue;
+                totalElement.textContent = updatedTotal.toFixed(2); // Update the total with 2 decimal places
+                couponMessage1.textContent = response.message; // Display the success message from the response
+                } else {
+                // Coupon is not available or there was an error
+                couponMessage.textContent = response.message; // Display the error message from the response
+                }
+            }
+        // <!--===============================================================================================-->
+        </script>
+
+        <script>
+            function walletPay() {
+
+                
+                // console.log("hai");
+                $.ajax({
+                    url: "/wallet_buy",
+                    method: "POST",
+
+                    success: function (data) {
+
+                        // console.log(data,"kk");
+
+                        if (data.success) {
+                            setNewTotal(data.wallet_balance);
+                        } else {
+                            console.log('error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Coupon request failed. Status:', status);
+                    }
+                });
+
+            }
+
+            const setNewTotal = (walletBalance) => {
+                const itemTotal = parseInt(document.getElementById('totalprice').innerHTML);
+                console.log("this is from walletBalance, itemtotal: ",itemTotal);
+                // let total = 0;
+                // for (let i = 0; i < itemTotal.length; i++) {
+                //    total += Number(itemTotal[i].innerHTML);
+                // }
+
+                let sum = (10 / 100) * itemTotal
+                console.log("this is from walletBalance, sum: ",sum);
+
+                if (walletBalance > sum) {
+                   newtotal = (itemTotal - sum)
+
+                } else {
+                    return alert('wallet Amount insufficient')
+                }
+
+                document.getElementById('wallet').innerHTML = ` wallet amount - ${sum}`;
+                document.getElementById('wallet_remove').innerHTML = `<i class="fa fa-times"></i>`;
+                document.getElementById('wallet').style.display = 'block';
+                document.getElementById('wallet_remove').style.display = 'inline';
+
+
+                document.getElementById('totalprice').innerHTML = ` ${newtotal}`;
+            }
+
+
+
+            // Function to delete the selected coupon
+            function deleteCoupon() {
+
+                $.ajax({
+                    url: "/delete_coupon",
+                    type: "post",
+                    success: function (data) {
+                        handleCouponResponse(data);
+                        hideDeleteCouponButton();
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                });
+
+                function handleCouponResponse(data) {
+                    var couponMessage2 = document.getElementById('couponMessage');
+                    var totalElement = document.getElementById('totalprice');
+
+                    if (data.success) {
+                        var new_amount = data.totalPrice
+                        var total = parseFloat(totalElement.textContent);
+                        couponMessage2.textContent = data.message;
+
+                        console.log(total, "789678");
+                        console.log(new_amount, "789678");
+                        totalElement.textContent = new_amount
+
+                        setTimeout(function () {
+                            couponMessage2.textContent = '';
+                        }, 2000);
+
+                    } else {
+                        console.log('error');
+                    }
+                }
+                function hideDeleteCouponButton() {
+                    console.log("piopi");
+                    var deleteCouponButton = document.getElementById('deleteCouponButton');
+                    deleteCouponButton.style.display = 'none';
+                }
+            }
+
+
+        </script>
+
+    <%- include('partials/_footerbar') %>
+<%- include('partials/_footer') %>
