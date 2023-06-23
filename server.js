@@ -15,7 +15,7 @@ const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
 
 dotenv.config({path: 'config.env'})
-const PORT = process.env.PORT||8080
+const PORT = process.env.PORT||3000
 const jsonParser = bodyparser.json()
 
 app.use(nocache())
