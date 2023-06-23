@@ -1097,8 +1097,7 @@ exports.addToWishlist = async (req,res)=>{
     console.log(userWishlist,"yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
 
   if (!userWishlist) {
-      // If the user's cart doesn't exist
-      //creat new one
+      // If the user's wishlist doesn't exist create new one
       let newWishlist = new wishlistSchema({ userId: userId, products: [] });
       await newWishlist.save();
       console.log(newWishlist,"////////////////////////////////////////////////");
