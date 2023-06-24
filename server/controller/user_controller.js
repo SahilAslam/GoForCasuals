@@ -143,20 +143,26 @@ exports.logout = (req, res) => {
 };
 
 exports.product_view = async (req, res) => {
-  const user = req.session.user;
+  if (req.session.user) {   
+    try {
+      const user = req.session.user;
+      const { id } = req.params;
 
-  try {
-    const { id } = req.params;
-    const products = await productSchema.find() 
-    const product = await productSchema.findById(id);
-    if (!product) {
-      console.log("product not found");
-      res.redirect("/product");
+      const products = await productSchema.find() 
+      const product = await productSchema.findById(id);
+
+      if (!product) {
+        console.log("product not found");     
+        res.redirect("/shop");
+      }
+      return res.render("user/product_details", { product, user, products });
+
+    } catch (error) {
+      console.error(error);
+      res.redirect("/shop");
     }
-    return res.render("user/product_details", { product, user, products });
-  } catch (error) {
-    console.error(error);
-    res.redirect("/product");
+  } else {
+    res.redirect("/login")
   }
 };
 
@@ -544,8 +550,8 @@ exports.checkout = async (req, res) => {
           intent: "sale",
           payer: { payment_method: "paypal" },
           redirect_urls: {
-            return_url: "http://localhost:8080/paypal-success",
-            cancel_url: "http://localhost:8080/paypal-err",
+            return_url: "https://goforcasuals.shop/paypal-success",
+            cancel_url: "https://goforcasuals.shop/paypal-err",
           },
           transactions: [ 
             {

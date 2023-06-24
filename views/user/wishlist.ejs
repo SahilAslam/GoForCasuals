@@ -1,63 +1,65 @@
 <%- include('partials/_header') %>
 <%- include('partials/_navbar') %>
 
-<!-- ============ Main ============ -->
-<section class="h-100 mb-5" style="background-color: #eee;" >
-    <div class="container h-100 py-5">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-10">
-  
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-normal mb-0 text-black">My Wishlist</h3>
+<div class="container m-t-100">
+  <div class="flex-w flex-sb-m p-b-52">
+      <div class="flex-w flex-l-m filter-tope-group m-tb-10">
 
-          </div>
-          <% if (!locals.products) { %>
-            <div class="empty-cart-message mt-5">
-                <h2>Your Wishlist is currently empty!</h2>
-                <a  href="/shop" class="continue-shopping-button mt-3">Continue Shopping</a>
-            </div>
-        <% } else { %>
-            <%= console.log(products,"///////////////////hjgihgv")%>
-        <% products.forEach(product => { %>
-          <div class="card rounded-3 mb-4" id="product_<%= product.productId._id %>">
-            <div class="card-body p-4">
-              <div class="row d-flex justify-content-between align-items-center">
-                <div class="col-md-2 col-lg-2 col-xl-2">
-                  <img
-                    src="<%= product.productId.photo[0] %>"
-                    class="img-fluid rounded-3" alt="Cotton T-shirt">
+        <!-- ============ Main ============ -->
+        <section class="h-100 mb-5" style="background-color: #eee;">
+          <div class="container h-100 py-5">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-12 col-md-10">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <h3 class="fw-normal mb-0 text-black">My Wishlist</h3>
                 </div>
-                <div class="col-md-3 col-lg-3 col-xl-3">
-                  <p class="lead fw-normal mb-2 font-weight-bold"><%= product.productId.name %></p>
-                  
+                <% if (!locals.wishlistProducts) { %>
+                <div class="empty-cart-message mt-5">
+                  <h2>Your Wishlist is currently empty!</h2>
+                  <a href="/shop" class="continue-shopping-button mt-3">Continue Shopping</a>
                 </div>
-                <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                    <h5 class="mb-0">₹<%= product.productId.price %></h5>
+                <% } else { %>
+                <%= console.log(wishlistProducts,"///////////////////hjgihgv")%>
+                <% wishlistProducts.forEach(product => { %>
+                <div class="card rounded-3 mb-4" id="product_<%= product.productId._id %>">
+                  <div class="card-body p-4">
+                    <div class="row d-flex justify-content-between align-items-center">
+                      <div class="col-4 col-md-2 col-lg-2">
+                        <img src="<%= product.productId.photo[0] %>" class="img-fluid rounded-3" alt="Cotton T-shirt">
+                      </div>
+                      <div class="col-8 col-md-3 col-lg-3">
+                        <p class="lead fw-normal mb-2 font-weight-bold"><%= product.productId.name %></p>
+                      </div>
+                      <div class="col-8 col-md-3 col-lg-3">
+                        <h5 class="mb-0">₹<%= product.productId.price %></h5>
+                      </div>
+                      
+                      <div class="col-2 col-md-3 col-lg-2 d-flex justify-content-end">
+                        <button id="addToCartButton" onclick="addToCart(event,'<%= product.productId._id %>','<%= product.productId.name %>')">
+                          <i class="fas fa-cart-plus" style="font-size: 24px;"></i>
+                        </button>
+                      </div>
+                      <div class="col-2 col-md-1 col-lg-1 text-end">
+                        <button onclick="deleteItem('<%= product.productId._id %>','product_<%= product.productId._id %>','<%= product.productId.name %>')">
+                          <i class="fas fa-trash fa-lg"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                  
-                  
-                    <button id="addToCartButton" onclick="addToCart(event,'<%= product.productId._id %>','<%= product.productId.name %>')">
-                        <i class="fas fa-cart-plus" style="font-size: 24px;"></i>
-                    </button>
-                
-                </div>
-                <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                  <button onclick="deleteItem('<%= product.productId._id %>','product_<%= product.productId._id %>','<%= product.productId.name %>')"><i class="fas fa-trash fa-lg"></i></button>
-                </div>
+                <% }) %>
+                <% } %>
               </div>
             </div>
           </div>
-          <% }) %>
-
-          <% } %>
-  
-        </div>
+        </section>
+        
+        
+        <!-- ============ Main ============ -->
+        
       </div>
     </div>
-  </section>
-
-<!-- ============ Main ============ -->
+</div>
 
 <script>
     function addToCart(event,productId,productName) {

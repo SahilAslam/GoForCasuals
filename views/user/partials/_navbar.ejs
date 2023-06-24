@@ -58,7 +58,7 @@
 							</li>
 
 							<li class="">
-								<a href="/404">Features</a>
+								<a href="/user_profile">My Account</a>
 							</li>
 
 							<li>
@@ -159,8 +159,8 @@
 							My Account
 						</a>
 
-						<a href="/404" class="flex-c-m p-lr-10 trans-04">
-							EN
+						<a href="/" class="flex-c-m p-lr-10 trans-04">
+							IND
 						</a>
 
 						<a href="/404" class="flex-c-m p-lr-10 trans-04">
@@ -173,11 +173,11 @@
 			<ul class="main-menu-m">
 				<li>
 					<a href="/">Home</a>
-					<ul class="sub-menu-m">
+					<!-- <ul class="sub-menu-m">
 						<li><a href="index.html">Homepage 1</a></li>
 						<li><a href="home-02.html">Homepage 2</a></li>
 						<li><a href="home-03.html">Homepage 3</a></li>
-					</ul>
+					</ul> -->
 					<span class="arrow-main-menu-m">
 						<i class="fa fa-angle-right" aria-hidden="true"></i>
 					</span>
@@ -188,7 +188,7 @@
 				</li>
 
 				<li>
-					<a href="/404" class="label1 rs1" data-label1="hot">Features</a>
+					<a href="/user_profile">My Account</a>
 				</li>
 
 				<li>
@@ -206,7 +206,7 @@
 				<li>
 					<% if (locals.user) { %>
 						<div class="cl2 hov-cl1 trans-04 p-l-22 p-r-11">
-							<a href="/logout" style="color: #fff;">Logout</a>
+							<a href="/logout" style="color: #fff; text-underline-position: below;">Logout</a>
 						</div>
 					<% } %>
 					
@@ -315,5 +315,55 @@
 			</div>
 		</div>
 	</div>
+
+	<style>
+		@media only screen and (max-width: 767px) {
+			/* Adjust the logo size on mobile devices */
+			.logo {
+				font-size: 16px;
+			}
+	
+			/* Reduce the padding in the top bar on mobile devices */
+			.top-bar {
+				padding: 5px 0;
+			}
+	
+			/* Adjust the font size in the top bar on mobile devices */
+			.top-bar .left-top-bar,
+			.top-bar .right-top-bar {
+				font-size: 12px;
+			}
+	
+			/* Center align the top bar content on mobile devices */
+			.content-topbar {
+				align-items: center;
+			}
+	
+			/* Adjust the font size of the main menu items on mobile devices */
+			.main-menu > li > a {
+				font-size: 14px;
+			}
+	
+			/* Hide the sub-menu arrows on mobile devices */
+			.main-menu .arrow-main-menu-m {
+				display: none;
+			}
+	
+			/* Reduce the font size of the cart and account icons on mobile devices */
+			.icon-header-item {
+				font-size: 18px;
+			}
+	
+			/* Adjust the padding of the cart and account icons on mobile devices */
+			.icon-header-item {
+				padding: 5px 8px;
+			}
+	
+			/* Adjust the font size of the logout button on mobile devices */
+			.icon-header-item .btn {
+				font-size: 12px;
+			}
+		}
+	</style>
 
 	
