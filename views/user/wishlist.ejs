@@ -13,14 +13,14 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                   <h3 class="fw-normal mb-0 text-black">My Wishlist</h3>
                 </div>
-                <% if (!locals.wishlistProducts) { %>
+                <% if (!locals.products) { %>
                 <div class="empty-cart-message mt-5">
                   <h2>Your Wishlist is currently empty!</h2>
                   <a href="/shop" class="continue-shopping-button mt-3">Continue Shopping</a>
                 </div>
                 <% } else { %>
-                <%= console.log(wishlistProducts,"///////////////////hjgihgv")%>
-                <% wishlistProducts.forEach(product => { %>
+                <%= console.log(products,"///////////////////hjgihgv")%>
+                <% products.forEach(product => { %>
                 <div class="card rounded-3 mb-4" id="product_<%= product.productId._id %>">
                   <div class="card-body p-4">
                     <div class="row d-flex justify-content-between align-items-center">
