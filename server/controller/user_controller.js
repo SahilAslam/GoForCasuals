@@ -366,7 +366,7 @@ exports.addAddress = async (req, res) => {
 
     // Save the updated user document
     await user.save();
-    res.send("Address added to the user successfully.");
+    res.redirect("/userAddress");
   } catch (error) {
     console.error(error);
     res.status(500).send("Error finding/updating user.");
