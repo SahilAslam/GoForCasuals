@@ -394,12 +394,14 @@ exports.order_details = async (req, res) => {
   try {
     const id = req.params.id;
     console.log(id);
-    const orders = await orderSchema
+    const user = userSchema.findById(id)
+    const order = await orderSchema
       .findOne({ _id: id })
       .populate("user")
-      .populate("items.product");
-    console.log(orders);
-    res.render("admin/order_details", { orders });
+      .populate("items.product")
+      .populate('items.quantity')
+    console.log(order);
+    res.render("admin/order_details", { order, user });
   } catch (error) {
     console.log(error);
     res.status(501).send("Server Error");
@@ -611,7 +613,7 @@ exports.salesReportFilter = async (req, res) => {
   console.log(Todate);
   const filteredOrders = await orderSchema.find({createdAt:{$gte:FromDate,$lte:Todate}}).populate("user").populate("items.product").populate("address")
  
-  res.render("sales-report",{admin,filteredOrders})
+  res.render("admin/sales_report",{admin,filteredOrders})
 }
 
 exports.Banner=async(req,res)=>{

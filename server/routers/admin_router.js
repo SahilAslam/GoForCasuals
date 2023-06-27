@@ -81,7 +81,7 @@ route.get('/coupon', admin_controller.checkLoggedIn, admin_controller.coupon_pag
 route.get('/delete-coupon/:id', admin_controller.checkLoggedIn, admin_controller.delete_coupon)
 route.get('/refund/:id', admin_controller.checkLoggedIn, admin_controller.refund)
 route.get('/sales-report', admin_controller.checkLoggedIn, admin_controller.sales_report)
-route.get('/adminSalesFilter', admin_controller.checkLoggedIn, admin_controller.salesReportFilter)
+route.post('/adminSalesFilter', admin_controller.checkLoggedIn, admin_controller.salesReportFilter)
 route.get('/banner', admin_controller.checkLoggedIn, admin_controller.Banner)
 route.get('/addBanner', admin_controller.checkLoggedIn, admin_controller.addBanner)
 route.post('/addBanner', upload.array('photo',5), admin_controller.add_banner)

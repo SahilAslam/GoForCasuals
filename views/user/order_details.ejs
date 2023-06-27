@@ -54,10 +54,14 @@
                         <td>
                             <% if (orders.status === 'Delivered' && !orders.returnExpired) { %>
                                 <a class="btn btn-sm btn-primary" href="" data-toggle="modal" data-target="#exampleModal<%= orders._id %>">Return</a>
-                            <% } else if (orders.status !== "Cancelled" && orders.status !== "Delivered") { %>
+                            <% } else if (orders.status !== "Cancelled" && orders.status !== "Delivered" && orders.status !== "Amount refunded" && orders.payment_method !== 'paypal') { %>
                                 <a class="btn btn-sm btn-danger" href="" data-toggle="modal" data-target="#exampleModal<%= orders._id %>">Cancel</a>
-                            <% } else if(orders.returnExpired){ %>
+                            <% } else if(orders.payment_method === 'paypal' && !orders.returnExpired && orders.status !== "Amount refunded"){ %>
+                                <a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#exampleModal<%= orders._id %>">Cancel and Return</a>
+                            <% } else if(orders.returnExpired && orders.status !== 'Cancelled'){ %>
                                 <p>Return Not available</p>
+                            <% } else if(orders.status == 'Amount refunded'){ %>
+                                <p>Order Returned</p>
                             <% } else { %>
                                 <p>Order Cancelled</p>
                             <% } %>
@@ -85,13 +89,14 @@
             <div class="modal-body">
             Are you Sure?
             </div>
-            <div class="modal-footer">
-            
-            <% if (orders.status === 'Delivered' && !orders.returnExpired) { %>
-                <a class="btn btn-sm btn-primary" href="/orderReturned/<%= orders._id %>">Return Order</a>
-              <% } else if (orders.status !== "Cancelled" && orders.status !== "Delivered" && orders.status !== "Returned") { %>
-                <a class="btn btn-sm btn-primary" href="/orderCancelled/<%= orders._id %>">Cancel Order</a>
-              <% } %>
+            <div class="modal-footer">            
+                <% if (orders.status === 'Delivered' && !orders.returnExpired) { %>
+                    <a class="btn btn-sm btn-primary" href="/orderReturned/<%= orders._id %>">Return Order</a>
+                <% } else if (orders.status !== "Cancelled" && orders.status !== "Delivered" && orders.status !== "Returned" && orders.payment_method !== 'paypal') { %>
+                    <a class="btn btn-sm btn-primary" href="/orderCancelled/<%= orders._id %>">Cancel Order</a>
+                <% } else if(orders.payment_method === 'paypal'){ %>
+                    <a class="btn btn-sm btn-primary" href="/orderReturned/<%= orders._id %>">Return Order</a>
+                <% } %>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

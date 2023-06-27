@@ -1,70 +1,195 @@
-<form class="checkout-form" action="/checkout/<%=address._id %>" method="post" id="checkout-form">
-    <div class="col-md-12">
-        <h4 class="widget-title" style="color: #717fe0;">Billing Details</h4>
-        <div class="block billing-details mt-3">
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <div class="col-md-12">
-                        <div class="d-flex mb-3">
-                            <input type="radio" value="<%= address.id%>" name="address" class=" mr-3">
-                            <div class="border p-2" style="color: rgb(80, 80, 80);">
-                                <b>
-                                    <%= address.name%>
-                                </b>,<br>
-                                <%= address.address%>, <br>
-                                <%= address.city%>, <%= address.state%>, <br>
-                                Zipcode: <%= address.pincode%>, Mobile: <%= address.phone%>
-                            </div>
-                            <!-- <div class="ml-auto pr-3 d-flex"> -->
-                                <div class="p-l-100">
-                                  <a class="btn btn-primary pl-3 pr-3 text-light"
-                                    style="letter-spacing: 0.1rem;cursor: pointer;" data-toggle="modal"
-                                    data-target="#edit<%= address.id%>">Edit</a>
-                                </div>
-                                <div class="ml-3 mt-1" style="cursor: pointer;">
-                                  <a data-toggle="modal" data-target="#deleteAddr<%= address.id%>">
-                                    <div class="border border-warning text-center" style="width: fit-content;">
-                                      <span class="ion-ios-close p-3"></span>
-                                  </a>
-                                </div>
-                            </div>
-                        </div>                                            
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="block">
-            <h2 class="widget-title" style="color: #717fe0;">Payment Methods</h2>
-            <div class="payment-methods mt-4">
-                <div class="payment-method">
-                    <input class="payment-method-input" type="radio" name="payment"
-                        id="card-payment" value="paypal" >
-                    <label class="payment-method-label" for="card-payment">
-                        <span class="payment-method-icon"><i
-                                class="fa fa-credit-card"></i></span>
-                        Paypal
-                    </label>
-                </div>
-                <div class="payment-method">
-                    <input class="payment-method-input" type="radio" name="payment"
-                        id="razorpay-payment" value="razorpay">
-                    <label class="payment-method-label" for="razorpay-payment">
-                        <span class="payment-method-icon"><i class="fa fa-money"></i></span>
-                        Razorpay
-                    </label>
-                </div>
-                <div class="payment-method">
-                    <input class="payment-method-input" type="radio" name="payment"
-                        id="cod-payment" value="cod">
-                    <label class="payment-method-label" for="cod-payment">
-                        <span class="payment-method-icon"><i class="fa fa-money"></i></span>
-                        Cash on Delivery
-                    </label>
-                </div>
-            </div>
-            <button type="submit" class="btn mt-20" style="background-color: #717fe0; color: white; border: 2px solid #222;">
-                Place Order
-            </button>                                           
-        </div> 
-    </div>
-</form>
+<script>
+    let paypalTotal = 0
+exports.confirm_order = async (req, res) => {
+    try {
+      const user = req.session.user;
+      const userId = req.session.user?._id;
+
+      const addressId = req.params.id;
+      // console.log("id is", addressId);
+      const payment = req.body.payment;
+      console.log(payment);
+      const currentUser = await users.findById(userId);
+      console.log("currentUser is", currentUser);
+  
+      if (!currentUser) {
+        return res.status(404).send('User not found');
+      }
+  
+      const addressIndex = currentUser.address.findIndex((item) => item._id.equals(addressId));
+      const specifiedAddress = currentUser.address[addressIndex];
+  
+      if (!specifiedAddress) {
+        return res.status(404).send('Address not found');
+      }
+  
+      const userCart = await cart.findOne({ userId: userId }).populate('products.productId');
+      userCart ? console.log(userCart) : console.log("Cart not found");
+      
+      const discount = userCart.discount;
+      const wallet = userCart.wallet;
+  
+      const items = userCart.products.map((item) => {
+        const product = item.productId;
+        const quantity = item.quantity;
+        const price = product.price;
+  
+        if (!price) {
+          throw new Error("Product price is required");
+        }
+        if (!product) {
+          throw new Error("Product is required");
+        }
+        return {
+          product: product._id,
+          quantity: quantity,
+          price: price,
+        };
+      });
+  
+      console.log('items are',items);
+      let totalPrice = 0;
+      items.forEach((item) => {
+        totalPrice += item.price * item.quantity;
+      });
+
+      if(wallet){
+        totalPrice -= wallet;
+      }
+
+      if(discount){
+        totalPrice -= discount ;
+      }
+  
+      if (payment === 'cod') {
+        const orderDetails = new order({
+          user: userId,
+          items: items,
+          total: totalPrice,
+          status: 'Pending',
+          payment_method: payment,
+          createdAt: new Date(),
+          address: specifiedAddress,
+        });
+  
+        await orderDetails.save();
+        await cart.deleteOne({ userId: userId });
+        //to get the cart count on header
+        const userCart = await cart.findOne({ userId: userId }).populate('products.productId');
+        const count = userCart ? userCart.products.length : null;
+        res.render('user/thankYou', { user, count });
+      }
+
+
+      else if(payment == "paypal"){
+
+        const orderDetails = new order({
+            user: userId,
+            items: items,
+            total: totalPrice,
+            status: "Pending",
+            payment_method: payment,
+            createdAt: new Date(),
+            address: specifiedAddress,
+          })
+          await orderDetails.save();
+  
+          userCart.products.forEach((element) => {
+            paypalTotal += totalPrice
+          })
+  
+          let createPayment = {
+            intent: "sale",
+            payer: { payment_method: "paypal" },
+            redirect_urls: {
+              return_url: `http://localhost:5000/paypal-success/${userId}`,
+              cancel_url: "http://localhost:5000/paypal-err",
+            },
+            transactions: [ 
+              {
+                amount: {
+                  currency: "USD",
+                  total: (paypalTotal / 82).toFixed(2), // Divide by 82 to convert to USD
+                },
+                description: "Super User Paypal Payment",
+              },
+            ],
+          };
+  
+          paypal.payment.create(createPayment, function (error, payment) {
+            if (error) {
+              console.log(error);
+              throw error;
+              
+            } else {
+              for (let i = 0; i < payment.links.length; i++) {
+                if (payment.links[i].rel === "approval_url") {
+                  res.redirect(payment.links[i].href);
+                }
+              }
+            }
+          });
+          await cart.deleteOne({ userId: userId });
+          
+      }
+
+      else {
+        throw new Error('Invalid payment method');
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message || "Checkout failed!" });
+    }
+  };
+
+
+  exports.paypal_success = async (req, res) => {
+    const payerId = req.query.PayerID;
+
+    const paymentId = req.query.paymentId;
+    
+    const userId = req.params.id
+    const user = await users.findOne({ _id: userId });
+    
+    console.log("hgvfcg");
+    console.log(paypalTotal);
+    console.log("hgvfcg");
+  
+    const execute_payment_json = {
+      "payer_id": payerId,
+      "transactions": [{
+        "amount": {
+          "currency": "USD",
+          "total": paypalTotal
+        }
+      }]
+    };
+  
+    paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment) {
+      if (error) {
+        if (error.response && error.response.name === 'PAYER_ACTION_REQUIRED') {
+          // Redirect the buyer to the PayPal resolution link
+          const resolutionLink = error.response.links.find(link => link.rel === 'https://uri.paypal.com/rel/resolution');
+          if (resolutionLink) {
+            res.redirect(resolutionLink.href);
+          } else {
+            // Handle the case when resolution link is not available
+            console.log('Resolution link not found.');
+            throw error;
+          }
+        } else {
+          console.log(error);
+          throw error;
+        }
+      } else {
+    
+        console.log(JSON.stringify(payment));
+        req.session.user = user;
+        //to get the cart count on header
+        const userCart = await cart.findOne({ userId: userId }).populate('products.productId');
+        const count = userCart ? userCart.products.length : null;
+        res.render("user/paypal_success", { payment, user, count });
+      }
+    });
+  };
+</script>

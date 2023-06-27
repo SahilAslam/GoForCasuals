@@ -550,8 +550,8 @@ exports.checkout = async (req, res) => {
           intent: "sale",
           payer: { payment_method: "paypal" },
           redirect_urls: {
-            return_url: "https://goforcasuals.shop/paypal-success",
-            cancel_url: "https://goforcasuals.shop/paypal-err",
+            return_url: `http://localhost:3000/paypal-success/${userId}`,
+            cancel_url: "http://localhost:3000/paypal-err",
           },
           transactions: [ 
             {
@@ -593,8 +593,8 @@ exports.checkout = async (req, res) => {
 exports.paypal_success = async (req, res) => {
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
-  const user = req.session.user;
-  const userId = req.session.user?._id;
+  const userId = req.params.id
+  const user = await userSchema.findOne({ _id: userId })
 
   const execute_payment_json = {
     "payer_id": payerId,
@@ -624,7 +624,8 @@ exports.paypal_success = async (req, res) => {
       }
     } else {
       console.log(JSON.stringify(payment));
-      req.session.user = user
+      req.session.user = user;
+      console.log(user);
       res.render("user/paypal_success", { payment, user, userId });
     }
   });

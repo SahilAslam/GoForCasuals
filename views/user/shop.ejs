@@ -542,7 +542,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                                         </div>
                                     </div>
 
-                                    <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                    <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" id="addToCartButton">
                                         Add to cart
                                     </button>
                                 </div>
@@ -612,6 +612,29 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             };
             xhr.send();
         };
+</script>
+
+<script>
+    document.getElementById('addToCartButton').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        let productName = '<%= product.name %>'
+        // Make an AJAX request to the server
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/add_to_cart/<%= product._id %>', true);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === 4 && xhr.status === 200) {
+                // Display the success toast or SweetAlert here
+                swal({
+                    title: "Success",
+                    text: `${productName} added to cart`,
+                    icon: "success",
+                    button: "OK",
+                });
+            }
+        }
+        xhr.send();
+    });
 </script>
 
 <script>
