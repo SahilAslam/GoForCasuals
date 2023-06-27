@@ -550,8 +550,8 @@ exports.checkout = async (req, res) => {
           intent: "sale",
           payer: { payment_method: "paypal" },
           redirect_urls: {
-            return_url: `http://localhost:3000/paypal-success/${userId}`,
-            cancel_url: "http://localhost:3000/paypal-err",
+            return_url: `http://goforcasuals.shop/paypal-success/${userId}`,
+            cancel_url: "http://goforcasuals.shop/paypal-err",
           },
           transactions: [ 
             {
