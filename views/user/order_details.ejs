@@ -49,7 +49,7 @@
                         </td>
                         <td><%= orders.payment_method %></td>
                         <div class="align-center">            
-                            <td><%= orders.status %> <br> <a data-bs-toggle="modal" data-bs-target="#exampleModal<%= orders._id  %>"><i class="fas fa-pencil-alt align-center" ></i></a></td>
+                            <td><%= orders.status %> <br> <a data-bs-toggle="modal" data-bs-target="#exampleModal<%= orders._id  %>"></a></td>
                         </div>
                         <td>
                             <% if (orders.status === 'Delivered' && !orders.returnExpired) { %>

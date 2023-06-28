@@ -1,195 +1,84 @@
-<script>
-    let paypalTotal = 0
-exports.confirm_order = async (req, res) => {
-    try {
-      const user = req.session.user;
-      const userId = req.session.user?._id;
+<style>
+	.wrap-table-shopping-cart {
+  margin-bottom: 20px;
+}
 
-      const addressId = req.params.id;
-      // console.log("id is", addressId);
-      const payment = req.body.payment;
-      console.log(payment);
-      const currentUser = await users.findById(userId);
-      console.log("currentUser is", currentUser);
-  
-      if (!currentUser) {
-        return res.status(404).send('User not found');
-      }
-  
-      const addressIndex = currentUser.address.findIndex((item) => item._id.equals(addressId));
-      const specifiedAddress = currentUser.address[addressIndex];
-  
-      if (!specifiedAddress) {
-        return res.status(404).send('Address not found');
-      }
-  
-      const userCart = await cart.findOne({ userId: userId }).populate('products.productId');
-      userCart ? console.log(userCart) : console.log("Cart not found");
-      
-      const discount = userCart.discount;
-      const wallet = userCart.wallet;
-  
-      const items = userCart.products.map((item) => {
-        const product = item.productId;
-        const quantity = item.quantity;
-        const price = product.price;
-  
-        if (!price) {
-          throw new Error("Product price is required");
-        }
-        if (!product) {
-          throw new Error("Product is required");
-        }
-        return {
-          product: product._id,
-          quantity: quantity,
-          price: price,
-        };
-      });
-  
-      console.log('items are',items);
-      let totalPrice = 0;
-      items.forEach((item) => {
-        totalPrice += item.price * item.quantity;
-      });
+.table-shopping-cart {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-      if(wallet){
-        totalPrice -= wallet;
-      }
+.table_head {
+  background-color: #ffff;
+  text-align: left;
+}
 
-      if(discount){
-        totalPrice -= discount ;
-      }
-  
-      if (payment === 'cod') {
-        const orderDetails = new order({
-          user: userId,
-          items: items,
-          total: totalPrice,
-          status: 'Pending',
-          payment_method: payment,
-          createdAt: new Date(),
-          address: specifiedAddress,
-        });
-  
-        await orderDetails.save();
-        await cart.deleteOne({ userId: userId });
-        //to get the cart count on header
-        const userCart = await cart.findOne({ userId: userId }).populate('products.productId');
-        const count = userCart ? userCart.products.length : null;
-        res.render('user/thankYou', { user, count });
-      }
+.table_head th {
+  padding: 12px 15px;
+  font-weight: bold;
+  color: #333;
+}
 
+.table_row:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-      else if(payment == "paypal"){
+.table_row:nth-child(odd) {
+  background-color: #fff;
+}
 
-        const orderDetails = new order({
-            user: userId,
-            items: items,
-            total: totalPrice,
-            status: "Pending",
-            payment_method: payment,
-            createdAt: new Date(),
-            address: specifiedAddress,
-          })
-          await orderDetails.save();
-  
-          userCart.products.forEach((element) => {
-            paypalTotal += totalPrice
-          })
-  
-          let createPayment = {
-            intent: "sale",
-            payer: { payment_method: "paypal" },
-            redirect_urls: {
-              return_url: `http://localhost:5000/paypal-success/${userId}`,
-              cancel_url: "http://localhost:5000/paypal-err",
-            },
-            transactions: [ 
-              {
-                amount: {
-                  currency: "USD",
-                  total: (paypalTotal / 82).toFixed(2), // Divide by 82 to convert to USD
-                },
-                description: "Super User Paypal Payment",
-              },
-            ],
-          };
-  
-          paypal.payment.create(createPayment, function (error, payment) {
-            if (error) {
-              console.log(error);
-              throw error;
-              
-            } else {
-              for (let i = 0; i < payment.links.length; i++) {
-                if (payment.links[i].rel === "approval_url") {
-                  res.redirect(payment.links[i].href);
-                }
-              }
-            }
-          });
-          await cart.deleteOne({ userId: userId });
-          
-      }
+.column-1,
+.column-5 {
+  text-align: center;
+}
 
-      else {
-        throw new Error('Invalid payment method');
-      }
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: error.message || "Checkout failed!" });
-    }
-  };
+.column-2,
+.column-3,
+.column-4 {
+  padding: 12px 15px;
+}
 
+.how-itemcart1 img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+}
 
-  exports.paypal_success = async (req, res) => {
-    const payerId = req.query.PayerID;
+.quantity-field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    const paymentId = req.query.paymentId;
-    
-    const userId = req.params.id
-    const user = await users.findOne({ _id: userId });
-    
-    console.log("hgvfcg");
-    console.log(paypalTotal);
-    console.log("hgvfcg");
-  
-    const execute_payment_json = {
-      "payer_id": payerId,
-      "transactions": [{
-        "amount": {
-          "currency": "USD",
-          "total": paypalTotal
-        }
-      }]
-    };
-  
-    paypal.payment.execute(paymentId, execute_payment_json, async function(error, payment) {
-      if (error) {
-        if (error.response && error.response.name === 'PAYER_ACTION_REQUIRED') {
-          // Redirect the buyer to the PayPal resolution link
-          const resolutionLink = error.response.links.find(link => link.rel === 'https://uri.paypal.com/rel/resolution');
-          if (resolutionLink) {
-            res.redirect(resolutionLink.href);
-          } else {
-            // Handle the case when resolution link is not available
-            console.log('Resolution link not found.');
-            throw error;
-          }
-        } else {
-          console.log(error);
-          throw error;
-        }
-      } else {
-    
-        console.log(JSON.stringify(payment));
-        req.session.user = user;
-        //to get the cart count on header
-        const userCart = await cart.findOne({ userId: userId }).populate('products.productId');
-        const count = userCart ? userCart.products.length : null;
-        res.render("user/paypal_success", { payment, user, count });
-      }
-    });
-  };
-</script>
+.quantity-button {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border: none;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.quantity-input {
+  width: 50px;
+  padding: 6px 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.item-total {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+	</style>

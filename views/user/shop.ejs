@@ -232,9 +232,6 @@
 
         <!-- starts here -->
         <div class="row isotope-grid">
-            <%= console.log("///////////////////////////////////")%>
-            <%= console.log(product)%>
-            <%= console.log("///////////////////////////////////")%>
             <% product
               .filter((product) => !product.isBlocked)
               .forEach((product) => { %>
@@ -245,14 +242,14 @@
                     <a href="/product_view/<%= product._id %>">
                         <img src="<%= product.photo[0] %>" alt="IMG-PRODUCT">
                     </a>
-                    <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+                    <!-- <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
                     data-product-name="<%= product.name %>"
                     data-product-price="₹<%= product.price %>"
                     data-product-description="<%= product.description %>"
                     data-product-image="<%= product.photo[0] %>"
                     >
                       Quick View
-                    </a>
+                    </a> -->
                   </div>
           
                   <div class="block2-txt flex-w flex-t p-t-14">
@@ -576,6 +573,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     </div>
 </div>
 
+<script src="https://kit.fontawesome.com/1db845e4aa.js" crossorigin="anonymous"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" ></script>

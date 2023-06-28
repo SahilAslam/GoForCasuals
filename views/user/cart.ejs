@@ -21,7 +21,6 @@
 		
 	<% if (locals.cart) { %>
 	<!-- Shoping Cart -->
-	<form action="/userAddress" method="get" class="bg0 p-t-75 p-b-85">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -49,18 +48,13 @@
 									<td class="column-2"><%= product.productId.name %></td>
 									<td class="column-3"><%= product.productId.price %></td>
 									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" id="decrement_<%= product.productId._id %>" onclick="decrementQuantity('<%= product.productId._id %>')">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="quantity" value="<%= product.quantity %>" id="quantity_<%= product.productId._id %>">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" id="increment_<%= product.productId._id %>" onclick="incrementQuantity('<%= product.productId._id %>')">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
+										<div class="quantity-field">
+											<button id="decrement_<%= product.productId._id %>" onclick="decrementQuantity('<%= product.productId._id %>')" class="quantity-button">-</button>
+											<input type="number" name="quantity" value="<%= product.quantity %>" id="quantity_<%= product.productId._id %>" readonly class="quantity-input">
+											<button id="increment_<%= product.productId._id %>" onclick="incrementQuantity('<%= product.productId._id %>')" class="quantity-button">+</button>
 										</div>
 									</td>
+									
 									<% var total=product.quantity * product.productId.price %>
 									<td class="column-5 item-total" id="product-total-price-<%= product.productId._id %>"><%= total %></td>
 									<td class="column-5">
@@ -117,7 +111,7 @@
 								<% } else { %>
 									<p>No address found</p>
 								<% } %>	
-
+								
 								<div class="flex-w">
 									<a href="/userAddress">
 									<div class="flex-c-m stext-101 cl2 size-115 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer">
@@ -142,14 +136,13 @@
 							</div>
 						</div>
 
-						<a href="/checkout/:id"><button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+						<a href="/userAddress"><button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
 							PROCEED TO CHECKOUT
 						</button></a>
 					</div>
 				</div>
 			</div>
 		</div>
-	</form>
 
 	<% } else { %>
 		<div class="container center">
@@ -313,7 +306,30 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		</span>
 	</div>
 
-	
+	<style>
+	.quantity-field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-button {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border: none;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.quantity-input {
+  width: 50px;
+  padding: 6px 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+	</style>
 
 	<style>
 		.center {
@@ -345,6 +361,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		// }
 		// setSubtotal();
 
+	// Setting Subtotal<!--===============================================================================================-->
 		const setSubtotal=()=>{
 			const itemTotal=document.getElementsByClassName('item-total')
 			let subtotal=0;
@@ -358,24 +375,27 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		}
 		setSubtotal();
 
+	// Incrementing Quantity<!--===============================================================================================-->
 		function incrementQuantity(cartId) {
 			$.ajax({
 				url: "/incrementQuantity",
 				method: "POST",
 				data: { cartId: cartId },
 				success: function (data) {
-					if(data.success) {
+					if (data.success) {
 						$(`#product-total-price-${cartId}`).text(data.total);
-						$(`#quantity_${cartId}`).text(data?.quantity);
+						$(`#quantity_${cartId}`).val(data?.quantity);
 						setSubtotal();
 
-					} else if(data.success==false) {
-						if(data.maxQuantity) {
+						// Enable the decrement button
+						$(`#decrement_${cartId}`).prop("disabled", false);
+					} else if (data.success === false) {
+						if (data.maxQuantity) {
 							Toastify({
 								text: "Stock Limit Exceeded",
 								className: "info",
 								style: {
-									background: "red"
+								background: "red"
 								},
 								position: "center",
 								gravity: "center"
@@ -384,43 +404,53 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							$(`#increment_${cartId}`).prop("disabled", true);
 						}
 						setSubtotal();
-					}
-					 else {
+					} else {
 						console.log('error while updating');
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
-					// Handle error response here
-					res.send('error')
+				// Handle error response here
+				res.send('error');
 				}
-			})
+			});
 		}
 
+	// Decrementing Quantity<!--===============================================================================================-->
 		function decrementQuantity(cartItemId) {
-			var currentQuantity = parseInt($(`#quantity_${cartItemId}`).text());
-			if(currentQuantity > 1) {
+			var currentQuantity = parseInt($(`#quantity_${cartItemId}`).val());
+			if (currentQuantity > 1) {
 				$.ajax({
-					url: "/decrementQuantity",
-					method: "post",
-					data: { cartItemId: cartItemId },
-					success: function (data) {
-						// Handle success response here
-						console.log(data);
-						$(`#product-total-price-${cartItemId}`).text(data.total);
-						$(`#quantity_${cartItemId}`).text(data?.quantity);
-						setSubtotal();
-					},
-					error: function (jqXHR, textStatus, errorThrown) {
-						// Handle error response here
-						res.send('error')
-					}
-				})
+				url: "/decrementQuantity",
+				method: "post",
+				data: { cartItemId: cartItemId },
+				success: function (data) {
+					// Handle success response here
+					console.log(data);
+					$(`#product-total-price-${cartItemId}`).text(data.total);
+					$(`#quantity_${cartItemId}`).val(data?.quantity);
+					setSubtotal();
+
+					// Enable the increment button
+					$(`#increment_${cartItemId}`).prop("disabled", false);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					// Handle error response here
+					res.send('error');
+				}
+				});
 			} else {
-				$(`#quantity_${cartItemId}`).text(1)
+				// Disable the decrement button when the quantity is 1
+				$(`#decrement_${cartItemId}`).prop("disabled", true);
+				$(`#quantity_${cartItemId}`).val(1);
+
+				// Enable the increment button
+				$(`#increment_${cartItemId}`).prop("disabled", false);
 			}
 		}
-
 	</script>
+
+	<script src="https://kit.fontawesome.com/1db845e4aa.js" crossorigin="anonymous"></script>
+
 	<!-- Sweet alert -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" ></script>

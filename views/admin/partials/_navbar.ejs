@@ -15,42 +15,42 @@
             </div>
         </div>
         <div class="navbar-nav w-100">
-            <a href="/admin_dashboard" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            <a href="/admin_dashboard" class="nav-item nav-link "><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-table me-2"></i>Products</a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a href="/product" class="dropdown-item">Product Details</a>
-                    <a href="/addProduct" class="dropdown-item">Add Product</a>
+                    <a href="/product" class="dropdown-item nav-link">Product Details</a>
+                    <a href="/addProduct" class="dropdown-item nav-link">Add Product</a>
                     <!-- <a href="element.html" class="dropdown-item">Other Elements</a> -->
                 </div>
             </div>
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-th me-2"></i>Category</a>
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-table me-2"></i>Category</a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a href="/category" class="dropdown-item">Category Details</a>
-                    <a href="/add_category" class="dropdown-item">Add Category</a>
+                    <a href="/category" class="dropdown-item nav-link">Category Details</a>
+                    <a href="/add_category" class="dropdown-item nav-link">Add Category</a>
                     <!-- <a href="element.html" class="dropdown-item">Other Elements</a> -->
                 </div>
             </div>
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-th me-2"></i>Coupons</a>
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-table me-2"></i>Coupons</a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a href="/coupon" class="dropdown-item">Coupon Details</a>
-                    <a href="/addCoupon" class="dropdown-item">Add New Coupon</a>
+                    <a href="/coupon" class="dropdown-item nav-link">Coupon Details</a>
+                    <a href="/addCoupon" class="dropdown-item nav-link">Add New Coupon</a>
                     <!-- <a href="element.html" class="dropdown-item">Other Elements</a> -->
                 </div>
             </div>
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-th me-2"></i>Banners</a>
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-table me-2"></i>Banners</a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a href="/banner" class="dropdown-item">Banner Details</a>
-                    <a href="/addBanner" class="dropdown-item">Add New Banner</a>
+                    <a href="/banner" class="dropdown-item nav-link">Banner Details</a>
+                    <a href="/addBanner" class="dropdown-item nav-link">Add New Banner</a>
                     <!-- <a href="element.html" class="dropdown-item">Other Elements</a> -->
                 </div>
             </div>
             <a href="/user" class="nav-item nav-link"><i class="fa fa-users me-2"></i>Users</a>
             <a href="/orders" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Orders</a>
-            <a href="/sales-report" class="nav-item nav-link active"><i class="fa fa-table me-2"></i>Sales Report</a>
+            <a href="/sales-report" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Sales Report</a>
             <!-- <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a> -->
             <!-- <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
@@ -158,3 +158,20 @@
         </div>
     </nav>
     <!-- Navbar End -->
+
+    <script>
+        // Get the current page URL
+        var currentPageUrl = window.location.href;
+
+        // Get all the anchor tags inside the navbar
+        var navbarLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+        // Loop through each anchor tag
+        navbarLinks.forEach(function(link) {
+            // Check if the href attribute matches the current page URL
+            if (link.href === currentPageUrl) {
+                // Add the "active" class to the matching anchor tag
+                link.classList.add('active');
+            }
+        });
+    </script>

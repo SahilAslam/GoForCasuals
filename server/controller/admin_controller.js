@@ -266,7 +266,7 @@ exports.updateProduct = async (req, res) => {
 
     // Check if files were uploaded
     if (files && files.length > 0) {
-      const newImages = files.map((file) => file.filename);
+      const newImages = [];
 
       // Delete the previous images
       if (req.body.photos && req.body.photos.length > 0) {
@@ -308,7 +308,7 @@ exports.updateProduct = async (req, res) => {
       );
 
       if (updatedProduct) {
-        console.log("Product photo updated");
+        console.log("Product updated");
         res.redirect("/product");
       } else {
         // If product not found
@@ -316,8 +316,26 @@ exports.updateProduct = async (req, res) => {
         res.redirect("/product");
       }
     } else {
-      console.log("No file uploaded");
-      res.redirect("/product");
+      // No files were uploaded, update the product without changing the image
+      const updatedProduct = await productSchema.findByIdAndUpdate(
+        id,
+        {
+          name: req.body.name,
+          category: req.body.category,
+          description: req.body.description,
+          price: req.body.price,
+        },
+        { new: true }
+      );
+
+      if (updatedProduct) {
+        console.log("Product updated");
+        res.redirect("/product");
+      } else {
+        // If product not found
+        console.log("Product not found");
+        res.redirect("/product");
+      }
     }
   } catch (error) {
     console.error(error);
