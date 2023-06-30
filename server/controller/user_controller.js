@@ -481,9 +481,10 @@ exports.checkout = async (req, res) => {
         const price = product.price;
 
         // Decrement stock
-        product.stock -= quantity;
-        product.save();
-
+        if(product.stock) {
+          product.stock -= quantity;
+          product.save();
+        }
 
         if (!price) {
           throw new Error("Product price is required");
