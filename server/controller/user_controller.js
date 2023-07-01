@@ -6,31 +6,12 @@ const couponSchema = require("../model/coupon_model")
 const walletSchema = require("../model/wallet_model")
 const bannerSchema = require("../model/banner_model")
 const wishlistSchema = require("../model/whishlist_model")
+const Category = require('../model/add_category');
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const { log } = require("console");
 const paypal = require('paypal-rest-sdk')
 
-
-
-exports.homeRoutes = async (req, res) => {
-  const user = req.session.user;
-  const userId = req.session.user?._id;
-  console.log(user);
-  const banner = await bannerSchema.find()
-  const product = await productSchema.find().limit(12);
-  const cart = await cartSchema
-        .findOne({ userId: userId })
-        .populate("products.productId");
-      if (cart) {
-        let products = cart.products;
-        console.log(products);
-        res.render("user/index", { banner, user, product, cart, products });
-      } else {
-        res.render("user/index", { banner, user, product });
-      }  
-  
-};
 
 exports.userLogin = (req, res) => {
   const user = req.session.user;
@@ -39,6 +20,33 @@ exports.userLogin = (req, res) => {
   } else {
     res.render("user/login");
   }
+};
+
+exports.homeRoutes = async (req, res) => {
+  const user = req.session.user;
+  const userId = req.session.user?._id;
+
+  const page = req.query.page || 1; // Get the current page from the query parameters
+  const limit = 8; // Number of products per page
+
+  const count = await productSchema.countDocuments(); // Count total number of products
+  const totalPages = Math.ceil(count / limit); // Calculate the total number of pages
+
+  const skip = (page - 1) * limit; // Calculate the number of products to skip
+
+  const banner = await bannerSchema.find()
+  const product = await productSchema.find().skip(skip).limit(limit);
+  const cart = await cartSchema
+        .findOne({ userId: userId })
+        .populate("products.productId");
+      if (cart) {
+        let products = cart.products;
+        console.log(products);
+        res.render("user/index", { banner, user, product, cart, products, totalPages, currentPage: page });
+      } else {
+        res.render("user/index", { banner, user, product, totalPages, currentPage: page });
+      }  
+  
 };
 
 exports.userSignup = (req, res) => {
@@ -57,8 +65,6 @@ exports.createUser = async (req, res) => {
   if (existingPhone.length > 0) {
     return res.render('user/signup', { msg: "Mobile allready exists" });
   }
-
-  
 
   const saltRounds = 10;
   bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
@@ -90,7 +96,6 @@ exports.createUser = async (req, res) => {
   });
 };
 
-
 exports.user_login = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -107,7 +112,7 @@ exports.user_login = async (req, res) => {
       if (isMatch) {
         req.session.user = user;
         // req.session.userId=user._id
-        return res.render("user/index", { user, product, banner });
+        return res.redirect("/");
       } else {
         return res.render("user/login", {
           message: "Incorrect password, please try again",
@@ -126,10 +131,24 @@ exports.user_login = async (req, res) => {
 
 exports.shop_page = async (req, res) => {
   const user = req.session.user;
-  const product = await productSchema.find() 
-  // const user = await userSchema.findOne({username:sessionUser})
-  res.render("user/shop", { product, user });
+  const page = req.query.page || 1; // Get the current page from the query parameters
+  const limit = 8; // Number of products per page
+
+  try {
+    const count = await productSchema.countDocuments(); // Count total number of products
+    const totalPages = Math.ceil(count / limit); // Calculate the total number of pages
+
+    const skip = (page - 1) * limit; // Calculate the number of products to skip
+
+    const product = await productSchema.find().skip(skip).limit(limit); // Fetch products for the current page
+
+    res.render("user/shop", { product, user, totalPages, currentPage: page });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 };
+
 
 exports.logout = (req, res) => {
   req.session.destroy(function (err) {
@@ -1174,3 +1193,61 @@ exports.removeItemWishlist = async (req,res)=>{
       
   }
 }
+
+exports.searchProducts = async (req, res) => {
+  const user = req.session.user;
+  const page = req.query.page || 1; // Get the current page from the query parameters
+  const limit = 8; // Number of products per page
+  const searchQuery = req.body.searchQuery; // Get the search query from the request body
+
+  try {
+    const count = await productSchema.countDocuments({
+      // Count total number of products that match the search query
+      $text: { $search: searchQuery }
+    });
+
+    const totalPages = Math.ceil(count / limit); // Calculate the total number of pages
+
+    const skip = (page - 1) * limit; // Calculate the number of products to skip
+
+    const product = await productSchema
+      .find({ $text: { $search: searchQuery } }) // Fetch products that match the search query
+      .skip(skip)
+      .limit(limit);
+
+    res.render("user/shop", { product, user, totalPages, currentPage: page });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+exports.homeSearch = async (req, res) => {
+  const user = req.session.user;
+  const page = req.query.page || 1; // Get the current page from the query parameters
+  const limit = 8; // Number of products per page
+  const searchQuery = req.body.searchQuery; // Get the search query from the request body
+
+  try {
+    const banner = await bannerSchema.find()
+
+    const count = await productSchema.countDocuments({
+      // Count total number of products that match the search query
+      $text: { $search: searchQuery }
+    });
+
+    const totalPages = Math.ceil(count / limit); // Calculate the total number of pages
+
+    const skip = (page - 1) * limit; // Calculate the number of products to skip
+
+    const product = await productSchema
+      .find({ $text: { $search: searchQuery } }) // Fetch products that match the search query
+      .skip(skip)
+      .limit(limit);
+
+    res.render("user/index", { banner, product, user, totalPages, currentPage: page });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};

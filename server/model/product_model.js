@@ -1,37 +1,40 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-var productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        require: true
+        required: true
     },
     price: {
         type: String,
-        require: true
+        required: true
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        type:String,
+        type: String,
         ref: 'category'
     },
     description: {
         type: String,
-        require: true
+        required: true
     },
     photo: [{
         type: String,
-        require: true
+        required: true
     }],
     stock: {
         type: Number,
-        require: true
+        required: true
     },
     isBlocked: {
         type: Boolean,
         default: false,
     }
-})
+});
 
-const Product = new mongoose.model('product', productSchema);
+// Create a text index on the 'name' field
+productSchema.index({ name: 'text' });
 
-module.exports = Product
+const Product = mongoose.model('product', productSchema);
+
+module.exports = Product;

@@ -91,5 +91,7 @@ route.get('/delete-address/:id', user_controller.deleteAddress)
 route.get('/wishlist', user_controller.wishlist)
 route.post('/add-to-wishlist/:id', user_controller.addToWishlist)
 route.delete("/deleteItem-Wishlist/:id",user_controller.removeItemWishlist)
+route.post("/search", user_controller.searchProducts);
+route.post("/homeSearch", user_controller.homeSearch);
 
 module.exports = route

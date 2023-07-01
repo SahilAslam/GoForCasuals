@@ -1,84 +1,38 @@
-<style>
-	.wrap-table-shopping-cart {
-  margin-bottom: 20px;
-}
+<form action="/search" method="POST">
+  <div class="bor8 dis-flex p-l-15">
+    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+      <i class="zmdi zmdi-search"></i>
+    </button>
 
-.table-shopping-cart {
-  width: 100%;
-  border-collapse: collapse;
-}
+    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="searchQuery" placeholder="Search">
+  </div>
+</form>
 
-.table_head {
-  background-color: #ffff;
-  text-align: left;
-}
+<script>
+  const user = req.session.user;
+    const page = req.query.page || 1; // Get the current page from the query parameters
+    const limit = 8; // Number of products per page
+    const searchQuery = req.body.searchQuery; // Get the search query from the request body
+  
+    try {
+      const count = await productSchema.countDocuments({
+        // Count total number of products that match the search query
+        $text: { $search: searchQuery }
+      });
+  
+      const totalPages = Math.ceil(count / limit); // Calculate the total number of pages
+  
+      const skip = (page - 1) * limit; // Calculate the number of products to skip
+  
+      const product = await productSchema
+        .find({ $text: { $search: searchQuery } }) // Fetch products that match the search query
+        .skip(skip)
+        .limit(limit);
+  
+      res.render("user/shop", { product, user, totalPages, currentPage: page });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
 
-.table_head th {
-  padding: 12px 15px;
-  font-weight: bold;
-  color: #333;
-}
-
-.table_row:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.table_row:nth-child(odd) {
-  background-color: #fff;
-}
-
-.column-1,
-.column-5 {
-  text-align: center;
-}
-
-.column-2,
-.column-3,
-.column-4 {
-  padding: 12px 15px;
-}
-
-.how-itemcart1 img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.quantity-field {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quantity-button {
-  width: 30px;
-  height: 30px;
-  font-size: 18px;
-  border: none;
-  background-color: #f9f9f9;
-  cursor: pointer;
-}
-
-.quantity-input {
-  width: 50px;
-  padding: 6px 10px;
-  text-align: center;
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
-}
-
-.item-total {
-  font-weight: bold;
-}
-
-a {
-  text-decoration: none;
-  color: #333;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-	</style>
+</script>
